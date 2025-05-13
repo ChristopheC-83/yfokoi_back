@@ -18,6 +18,7 @@ class UsersLinksModel extends DataBase
         SELECT u.* 
         FROM user u 
         WHERE u.name LIKE :name 
+        AND u.id != :currentUserId
         AND NOT EXISTS (
             SELECT 1 FROM user_links ul 
             WHERE (ul.user1_id = :currentUserId AND ul.user2_id = u.id) 

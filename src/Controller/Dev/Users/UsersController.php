@@ -114,7 +114,7 @@ class UsersController extends MainController
         }
     }
 
-    
+
     public function profilePage(): void
     {
         $datas_page = [
@@ -138,6 +138,20 @@ class UsersController extends MainController
 
         // On détruit la session pour déconnecter l'utilisateur
         flashMessage('Déconnexion réussie.', 'alert-info');
+
+        header('Location: ' . ROOT . 'account/connection');
+        exit;
+    }
+
+    public function deleteAccount()
+    {
+        if ($this->usersModel->deleteUser($_SESSION['user_id'])) {
+            // On détruit la session pour déconnecter l'utilisateur
+            session_destroy();
+            flashMessage('Compte supprimé avec succès.', 'alert-danger');
+        } else {
+            flashMessage('Erreur lors de la suppression du compte.', 'alert-danger');
+        }
 
         header('Location: ' . ROOT . 'account/connection');
         exit;

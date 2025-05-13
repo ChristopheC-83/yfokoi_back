@@ -15,3 +15,4 @@ action="<?= ROOT ?>account/connectionAccount" id="connectionForm">
 
     <button type="submit" class="btn btn-primary">Se Connecter</button>
 </form>
+

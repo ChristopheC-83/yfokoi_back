@@ -31,9 +31,9 @@ switch ($path[1]) {
     case "profile":
         $usersController->profilePage();
         break;
-    // case "deleteAccount":
-    //     $usersController->deleteAccount();
-    //     break;
+    case "deleteAccount":
+        $usersController->deleteAccount();
+        break;
 
     default:
         throw new Exception("La page Account demandée n'existe pas.");

@@ -55,6 +55,15 @@ class UsersModel extends DataBase {
         return $result ?: null;
     }
 
-
+    public function deleteUser(int $id): bool
+    {
+       $this->setDB()->beginTransaction();
+        $req = "DELETE FROM user WHERE id = :id";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $result = $stmt->execute();
+        $this->setDB()->commit();
+        return $result;
+    }
 
 }

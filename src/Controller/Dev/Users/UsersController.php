@@ -131,11 +131,8 @@ class UsersController extends MainController
     public function logout()
     {
         // Supprimer uniquement les variables de session spécifiques à l'utilisateur
-        unset($_SESSION['user_id']);
-        unset($_SESSION['name']);
-        unset($_SESSION['email']);
-        unset($_SESSION['role']);
-
+        $_SESSION = [];
+        session_destroy();
         // On détruit la session pour déconnecter l'utilisateur
         flashMessage('Déconnexion réussie.', 'alert-info');
 

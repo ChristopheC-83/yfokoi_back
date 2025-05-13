@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-
+use Src\Controller\Dev\Items\ItemsController;
 use Src\Controller\Dev\MainController;
 use Src\Controller\Dev\Users\UsersController;
 use Src\Controller\Dev\Lists\ListsController;
@@ -29,6 +29,7 @@ define("ROOT", str_replace("index.php", "", (isset($_SERVER['HTTPS']) ? "https" 
 $mainController = new MainController();
 $usersController = new UsersController();
 $listsController = new ListsController();
+$itemsController = new ItemsController();
 $usersLinksController = new UsersLinksController();
 
 try {
@@ -51,6 +52,9 @@ try {
             break;
         case "lists":
             require_once BASE_DIR . "/routes/listsIndex.php";
+            break;
+        case "items":
+            require_once BASE_DIR . "/routes/itemsIndex.php";
             break;
         case "usersLinks":
             require_once BASE_DIR . "/routes/usersLinksIndex.php";

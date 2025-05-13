@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Src\Controller\Dev;
 
 use Src\Core\Utilities;
+use Src\Models\ItemsModel;
 use Src\Models\ListsModel;
 use Src\Models\UsersLinksModel;
 use Src\Models\UsersModel;
@@ -18,6 +19,7 @@ class MainController
     public $validationService;
     public $listsModel;
     public $usersLinksModel;
+    public $itemsModel;
 
     public function __construct()
     {
@@ -25,6 +27,7 @@ class MainController
         $this->validationService = new ValidationSercice();
         $this->listsModel = new ListsModel();
         $this->usersLinksModel = new UsersLinksModel();
+        $this->itemsModel = new ItemsModel();
     }
 
     public function homePage()

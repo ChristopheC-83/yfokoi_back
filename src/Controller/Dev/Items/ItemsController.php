@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Src\Controller\Dev\Lists;
+namespace Src\Controller\Dev\Items;
 
 use Exception;
 use Src\Controller\Dev\MainController;
 use Src\Core\Utilities;
 
 
-class ListsController extends MainController
+class ItemsController extends MainController
 {
     public function createList($datas): void
     {

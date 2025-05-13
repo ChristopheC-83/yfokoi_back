@@ -1,3 +1,5 @@
+<?=  dump($_SESSION) ?>
+
 <?php if (!empty($_SESSION['name'])) : ?>
 
     <h1 class="text-center text-decoration-underline">Mes listes</h1>
@@ -27,7 +29,7 @@
         <?php endif ?>
     </div>
 
-    <form action="<?= ROOT ?>lists/addItem" class="d-flex gap-3 mb-4" method="POST">
+    <form action="<?= ROOT ?>items/addItem" class="d-flex gap-3 mb-4" method="POST">
 
         <?php if (isset($_SESSION['selected_list_id'])): ?>
             <input type="hidden" name="selected_list_id" value="<?= $_SESSION['selected_list_id'] ?>">
@@ -45,18 +47,18 @@
             <div
                 class="d-flex justify-content-between align-items-center border border-2 border-dark rounded-3 p-2 pb-0 mb-2 <?= $item['is_done'] == 1 ? 'bg-info' : '' ?>">
                 <div class="d-flex gap-3">
-                    <form class="d-flex gap-3 " method="POST" action="<?= ROOT ?>lists/itemIsDone" onchange="submit()">
+                    <form class="d-flex gap-3 " method="POST" action="<?= ROOT ?>items/itemIsDone" onchange="submit()">
                         <input type="hidden" name="id" value="<?= $item['id'] ?>">
                         <input type="checkbox" name="is_done" class="mb-1" <?= $item['is_done'] == 1 ? 'checked' : '' ?>>
                     </form>
                     <?php if (isset($_SESSION['edit_item_id']) && $_SESSION['edit_item_id'] == $item['id']): ?>
                         <!-- Formulaire de modification -->
-                        <form action="<?= ROOT ?>lists/updateItem" method="POST" class="d-flex gap-2">
+                        <form action="<?= ROOT ?>items/updateItem" method="POST" class="d-flex gap-2">
                             <input type="hidden" name="id" value="<?= $item['id'] ?>">
                             <input type="text" name="new_content" class="form-control" value="<?= htmlspecialchars($item['content']) ?>">
                             <button class="btn btn-success">💾</button>
                         </form>
-                        <form action="<?= ROOT ?>lists/exitEditMode" method="POST">
+                        <form action="<?= ROOT ?>items/exitEditMode" method="POST">
                             <button class="btn btn-warning">❌</button>
                         </form>
                     <?php else: ?>
@@ -66,11 +68,11 @@
                     <?php endif; ?>
                 </div>
                 <div class="d-flex gap-3">
-                    <form action="<?= ROOT ?>lists/editMode" method="POST" class="pb-2">
+                    <form action="<?= ROOT ?>items/editMode" method="POST" class="pb-2">
                         <input type="hidden" name="id" value="<?= $item['id'] ?>">
                         <button class="fs-3">✏️</button>
                     </form>
-                    <form action="<?= ROOT ?>lists/deleteItem" method="post" class="pb-2">
+                    <form action="<?= ROOT ?>items/deleteItem" method="post" class="pb-2">
                         <input type="hidden" name="id" value="<?= $item['id'] ?>">
                         <button class="fs-3">🚮</button>
                     </form>
@@ -78,7 +80,7 @@
             </div>
         <?php endforeach; ?>
         <?php if ($deleteAllDoneBtn): ?>
-            <form action="<?= ROOT ?>lists/deleteAllDone" method="POST" class="d-flex justify-content-center mt-4">
+            <form action="<?= ROOT ?>items/deleteAllDone" method="POST" class="d-flex justify-content-center mt-4">
                 <input type="hidden" name="id_list" value="<?= $_SESSION['selected_list_id'] ?>">
                 <button class="btn btn-info">
                     <p class="fs-3 bold align-center mb-2">Supprimer tous les éléments cochés</p>

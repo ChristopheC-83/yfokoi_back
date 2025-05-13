@@ -77,12 +77,14 @@
                 </div>
             </div>
         <?php endforeach; ?>
-        <form action="<?= ROOT ?>lists/deleteAllDone" method="POST" class="d-flex justify-content-center mt-4">
-            <input type="hidden" name="id_list" value="<?= $_SESSION['selected_list_id'] ?>">
-            <button class="btn btn-info">
-                <p class="fs-3 bold align-center mb-2">Supprimer tous les éléments cochés</p>
-            </button>
-        </form>
+        <?php if ($deleteAllDoneBtn): ?>
+            <form action="<?= ROOT ?>lists/deleteAllDone" method="POST" class="d-flex justify-content-center mt-4">
+                <input type="hidden" name="id_list" value="<?= $_SESSION['selected_list_id'] ?>">
+                <button class="btn btn-info">
+                    <p class="fs-3 bold align-center mb-2">Supprimer tous les éléments cochés</p>
+                </button>
+            </form>
+        <?php endif; ?>
     <?php endif ?>
 <?php else : ?>
     <h1 class="text-center text-decoration-underline">Bienvenue sur votre outil YFOKOI !</h1>

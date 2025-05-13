@@ -30,18 +30,27 @@ class MainController
     public function homePage()
     {
 
-        $listsOfUser=null;
+        $listsOfUser = null;
         $items_list = [];
         $list_name = "";
+        $deleteAllDoneBtn = false;
 
         if (isset($_SESSION['user_id'])) {
             $listsOfUser = $this->listsModel->getAllListsByUserId($_SESSION['user_id']);
         }
-        if(isset($_SESSION['selected_list_id'])){
+        if (isset($_SESSION['selected_list_id'])) {
             $items_list = $this->listsModel->getAllItemsByListId($_SESSION['selected_list_id']);
             $list_name = $this->listsModel->getListNameById($_SESSION['selected_list_id']);
+
+            // ✅ Vérification s'il y a des éléments cochés
+            foreach ($items_list as $item) {
+                if ($item['is_done'] == 1) {
+                    $deleteAllDoneBtn = true;
+                    break;
+                }
+            }
         }
-        
+
 
         $datas_page = [
             "description" => "Bienvenue sur votre outil YFOKOI !",
@@ -51,6 +60,7 @@ class MainController
             "listsOfUser" => $listsOfUser,
             "items_list" => $items_list,
             "list_name" => $list_name,
+            "deleteAllDoneBtn" => $deleteAllDoneBtn,
         ];
 
         Utilities::renderPage($datas_page);

@@ -6,6 +6,7 @@ namespace Src\Controller\Dev;
 
 use Src\Core\Utilities;
 use Src\Models\ListsModel;
+use Src\Models\UsersLinksModel;
 use Src\Models\UsersModel;
 use Src\Services\ValidationSercice;
 
@@ -16,12 +17,14 @@ class MainController
     public $usersModel;
     public $validationService;
     public $listsModel;
+    public $usersLinksModel;
 
     public function __construct()
     {
         $this->usersModel = new UsersModel();
         $this->validationService = new ValidationSercice();
         $this->listsModel = new ListsModel();
+        $this->usersLinksModel = new UsersLinksModel();
     }
 
     public function homePage()

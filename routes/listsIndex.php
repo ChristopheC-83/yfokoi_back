@@ -13,6 +13,9 @@ switch ($path[1]) {
     case "selectList":
         $listsController->selectList($_POST);
         break;
+    case "deleteList":
+        $listsController->deleteList();
+        break;
     case "addItem":
         $listsController->addItem($_POST);
         break;

@@ -1,26 +1,31 @@
-<?php if (isset($_SESSION['name'])) : ?>
+<?php if (!empty($_SESSION['name'])) : ?>
 
     <h1 class="text-center text-decoration-underline">Mes listes</h1>
 
-
-
     <form action="<?= ROOT ?>lists/newList" class="d-flex gap-3 mb-4" method="POST">
         <input type="hidden" name="owner_id" value="<?= $_SESSION['user_id'] ?>">
-        <input type="text" class="form-control col-10 col-md-8 col-lg-6" id="name" name="name" placeholder="Nouvelle liste">
-        <button class="btn btn-success">Créer</button>
+        <input type="text" class="form-control w-75" id="name" name="name" placeholder="Nouvelle liste">
+        <button class="btn btn-success col-2">Créer</button>
     </form>
 
+    <div class="d-flex mb-4 gap-3">
+        <form action="<?= ROOT ?>lists/selectList" method="POST" class=" w-75">
+            <select name="list_id" class="form-select" onchange="submit()">
+                <option value="">Sélectionner une liste perso à afficher</option>
+                <?php foreach ($listsOfUser as $list): ?>
+                    <option value="<?= $list['id'] ?>"
+                        <?= ($list['id'] == ($_SESSION['selected_list_id'] ?? null)) ? 'selected' : '' ?>><?= $list['name'] ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </form>
 
-    <form action="<?= ROOT ?>lists/selectList" method="post" class="d-flex gap-3 mb-4">
-        <select name="list_id" class="form-select col-10 col-md-8 col-lg-6" onchange="submit()">
-            <option value="">Sélectionner une liste perso à afficher</option>
-            <?php foreach ($listsOfUser as $list): ?>
-                <option value="<?= $list['id'] ?>"
-                    <?= ($list['id'] == ($_SESSION['selected_list_id'] ?? null)) ? 'selected' : '' ?>><?= $list['name'] ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-    </form>
+        <?php if (isset($_SESSION['selected_list_id'])): ?>
+            <form action="<?= ROOT ?>lists/deleteList" class="col-2" onSubmit="return confirm('On supprime cette liste ?')">
+                <button class="btn btn-danger w-100">Supprimer</button>
+            </form>
+        <?php endif ?>
+    </div>
 
     <form action="<?= ROOT ?>lists/addItem" class="d-flex gap-3 mb-4" method="POST">
 
@@ -28,9 +33,9 @@
             <input type="hidden" name="selected_list_id" value="<?= $_SESSION['selected_list_id'] ?>">
         <?php endif ?>
         <input type="hidden" name="created_by" value="<?= $_SESSION['name'] ?>">
-        <input type="text" class="form-control col-10 col-md-8 col-lg-6" id="content" name="content"
+        <input type="text" class="form-control w-75" id="content" name="content"
             placeholder="Ajouter à la liste" autofocus>
-        <button class="btn btn-success">Ajouter</button>
+        <button class="btn btn-success col-2">Ajouter</button>
     </form>
 
     <?php if (isset($_SESSION['selected_list_id'])): ?>
@@ -82,5 +87,4 @@
 <?php else : ?>
     <h1 class="text-center text-decoration-underline">Bienvenue sur votre outil YFOKOI !</h1>
     <p class="text-center">Connectez-vous pour accéder à vos listes.</p>
-
 <?php endif ?>

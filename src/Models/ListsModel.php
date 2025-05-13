@@ -137,4 +137,15 @@ class ListsModel extends DataBase
 
         return $success;
     }
+
+    public function deleteList(int $id_list): bool
+    {
+        $req = "DELETE FROM lists WHERE id = :id";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindValue(':id', $id_list, PDO::PARAM_INT);
+        $success = $stmt->execute();
+        $stmt->closeCursor();
+
+        return $success;
+    }
 }

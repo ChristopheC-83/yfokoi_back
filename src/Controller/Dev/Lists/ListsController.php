@@ -48,13 +48,13 @@ class ListsController extends MainController
     {
 
         // dd($datas);
-        if (empty($_POST['list_id'])) {
-            flashMessage('alert-danger', 'Aucune liste sélectionnée.');
+        if (empty($datas['list_id'])) {
+            unset($_SESSION['selected_list_id']);
             header('Location: ' . ROOT . 'accueil');
             exit;
         }
 
-        $_SESSION['selected_list_id'] = (int) $_POST['list_id'];
+        $_SESSION['selected_list_id'] = (int) $datas['list_id'];
         header('Location: ' . ROOT . 'accueil'); // ou autre redirection logique
         exit;
     }
@@ -183,5 +183,26 @@ public function updateItem($datas): void
 
         header('Location: ' . ROOT . 'accueil');
         exit;
+    }
+
+    public function deleteList(): void
+    {
+
+        // dd($_SESSION['selected_list_id']);
+        if (!isset($_SESSION['selected_list_id'])) {
+            flashMessage("ID invalide", "alert-danger");
+            header('Location: ' . ROOT . 'accueil');
+            exit;
+        }
+
+        $list_id = (int)$_SESSION['selected_list_id'];
+
+        if ($this->listsModel->deleteList($list_id)) {
+            $_SERVER['selected_list_id'] = null;
+            flashMessage("Liste supprimée avec succès.", "alert-success");
+        } else {
+            flashMessage("Erreur lors de la suppression de la liste.", "alert-danger");
+        }
+        header('Location: ' . ROOT . 'accueil');
     }
 }

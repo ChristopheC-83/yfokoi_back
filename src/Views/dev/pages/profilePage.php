@@ -1,5 +1,5 @@
 <h1 class="text-center text-decoration-underline">Mon Profil :</h1>
-<?php if (isset($asksFriends)): ?>
+<?php if (!empty($asksFriends)): ?>
     <h2 class="text-decoration-underline mb-3">Mes demandes d'ajout</h2>
     <?php foreach ($asksFriends as $ask): ?>
         <div class="col-12 col-md-9 col-lg-6 mb-4 border border-black border-2 rounded-3 p-3 d-flex align-items-center gap-3 mb-3">

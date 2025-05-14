@@ -45,7 +45,6 @@ class UsersLinksController extends MainController
     public function addContact($linkedUserId): void
     {
         $linkedUserId = (int) $linkedUserId['idContact'];
-        // Vérifier si l'utilisateur est connecté
         if (!isset($_SESSION['user_id'])) {
             flashMessage("Vous devez être connecté pour ajouter un contact.", "alert-danger");
             header('Location: ' . ROOT . 'account/login');
@@ -62,8 +61,6 @@ class UsersLinksController extends MainController
             header('Location: ' . ROOT . 'usersLinks/searchContact');
             exit;
         }
-
-        
 
         // Ajouter le lien dans la base de données
         $this->usersLinksModel->createLink($currentUserId, $linkedUserId);

@@ -72,4 +72,12 @@ class UsersLinksController extends MainController
         header('Location: ' . ROOT . 'account/profile');
         exit;
     }
+
+    public function validateAskFriendRequest($id) : array { 
+        $askFriendRequest=[];
+        $askFriendRequest = $this->usersLinksModel->getAskFriendRequest($id);
+
+        return $askFriendRequest;
+        
+     }
 }

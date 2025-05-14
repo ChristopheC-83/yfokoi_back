@@ -6,6 +6,7 @@ use Src\Controller\Dev\Items\ItemsController;
 use Src\Controller\Dev\MainController;
 use Src\Controller\Dev\Users\UsersController;
 use Src\Controller\Dev\Lists\ListsController;
+use Src\Controller\Dev\Users\UsersContextController;
 use Src\Controller\Dev\Users\UsersLinksController;
 
 session_start();
@@ -31,6 +32,7 @@ $usersController = new UsersController();
 $listsController = new ListsController();
 $itemsController = new ItemsController();
 $usersLinksController = new UsersLinksController();
+$usersContextController = new UsersContextController();
 
 try {
     if (empty($_GET['page'])) {

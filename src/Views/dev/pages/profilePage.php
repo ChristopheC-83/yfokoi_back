@@ -1,11 +1,37 @@
 <h1 class="text-center text-decoration-underline">Mon Profil :</h1>
+<?php if (isset($asksFriends)): ?>
+    <h2 class="text-decoration-underline mb-3">Mes demandes d'ajout</h2>
+    <?php foreach ($asksFriends as $ask): ?>
+        <div class="col-12 col-md-9 col-lg-6 mb-4 border border-black border-2 rounded-3 p-3 d-flex align-items-center gap-3 mb-3">
+            <div class="dflex column">
+                <p class="mb-0 w-50 fs-3"><?= $ask['name'] ?></p>
+                <p class="mb-0 w-50 text-secondary"><?= $ask['email'] ?></p>
+            </div>
+            <form method="post" action="<?= ROOT ?>usersLinks/askFriendRequest"
+                onSubmit="return confirm('Action irréversible, on supprime ?')">
+                <input type="hidden" name="idContact" value="<?= $ask['id'] ?>">
+                <input type="hidden" name="response" value="1">
+                <button class="btn btn-success">
+                    Accepter la demande</button>
+            </form>
+            <form method="post" action="<?= ROOT ?>usersLinks/askFriendRequest"
+                onSubmit="return confirm('Action irréversible, on supprime ?')">
+                <input type="hidden" name="idContact" value="<?= $ask['id'] ?>">
+                <input type="hidden" name="response" value="0">
+                <button class="btn btn-danger">
+                    Refuser la demande</button>
+            </form>
+        </div>
+    <?php endforeach ?>
 
+<?php endif ?>
 <div class="col-12 col-md-9 col-lg-6 mb-4">
     <p>Nom : <?= $_SESSION['name'] ?></p>
     <p>Email : <?= $_SESSION['email'] ?></p>
     <p>Rôle : <?= $_SESSION['role'] ?></p>
-    <form method="post" action="<?= ROOT ?>account/deleteAccount" onSubmit="return confirm('Action irréversible, on supprime ?')">
-        <button class="btn btn-danger" >
+    <form method="post" action="<?= ROOT ?>account/deleteAccount"
+        onSubmit="return confirm('Action irréversible, on supprime ?')">
+        <button class="btn btn-danger">
             Supprimer le compte</button>
     </form>
 </div>

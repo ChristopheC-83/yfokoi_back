@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Src\Controller\Dev;
 
+use Src\Controller\Dev\Users\UsersLinksController;
 use Src\Core\Utilities;
 use Src\Models\ItemsModel;
 use Src\Models\ListsModel;
+use Src\Models\UsersContextModel;
 use Src\Models\UsersLinksModel;
 use Src\Models\UsersModel;
 use Src\Services\ValidationSercice;
@@ -19,7 +21,10 @@ class MainController
     public $validationService;
     public $listsModel;
     public $usersLinksModel;
+    // public $usersLinksController;
     public $itemsModel;
+
+    public $usersContextModel;
 
     public function __construct()
     {
@@ -27,7 +32,11 @@ class MainController
         $this->validationService = new ValidationSercice();
         $this->listsModel = new ListsModel();
         $this->usersLinksModel = new UsersLinksModel();
+        // $this->usersLinksController = new UsersLinksController();
         $this->itemsModel = new ItemsModel();
+        $this->usersContextModel = new UsersContextModel();
+
+
     }
 
     public function homePage()

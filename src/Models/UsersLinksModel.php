@@ -65,8 +65,23 @@ class UsersLinksModel extends DataBase
         $stmt = $this->setDB()->prepare($req);
         $stmt->bindValue(':user1Id', $user1Id, PDO::PARAM_INT);
         $stmt->bindValue(':user2Id', $user2Id, PDO::PARAM_INT);
-         $success = $stmt->execute();
+        $success = $stmt->execute();
         $stmt->closeCursor();
         return $success;
+    }
+
+    public function getAskFriendRequest(int $userId): array
+    {
+        $req = "
+        SELECT u.id, u.name, u.email
+        FROM user u 
+        JOIN user_links ul ON u.id = ul.user1_id 
+        WHERE ul.user2_id = :userId AND ul.status = 'pending'";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+        return $result;
     }
 }

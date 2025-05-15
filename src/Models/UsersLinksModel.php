@@ -84,4 +84,25 @@ class UsersLinksModel extends DataBase
         $stmt->closeCursor();
         return $result;
     }
+
+    public function acceptFriendRequest(int $userId, int $contactId): bool
+    {
+        $req = "UPDATE user_links SET status = 'accepted' WHERE user1_id = :contactId AND user2_id = :userId";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindValue(':contactId', $contactId, PDO::PARAM_INT);
+        $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
+        $success = $stmt->execute();
+        $stmt->closeCursor();
+        return $success;
+    }
+    public function rejectFriendRequest(int $userId, int $contactId): bool
+    {
+        $req = "UPDATE user_links SET status = 'declined' WHERE user1_id = :contactId AND user2_id = :userId";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindValue(':contactId', $contactId, PDO::PARAM_INT);
+        $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
+        $success = $stmt->execute();
+        $stmt->closeCursor();
+        return $success;
+    }
 }

@@ -12,7 +12,7 @@ use Src\Core\Utilities;
 class UsersController extends MainController
 {
 
-    
+
     public $usersLinksController;
 
     public function __construct()
@@ -110,10 +110,12 @@ class UsersController extends MainController
 
     public function profilePage(): void
     {
-        
-            //  recherche des demandes d'amis
-        $asksFriends=$this->usersLinksController->validateAskFriendRequest($_SESSION['user_id']);
-          
+        $asksFriends = [];
+        //  recherche des demandes d'amis
+        if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
+            $asksFriends = $this->usersLinksController->askFriendRequest($_SESSION['user_id']);
+        }
+
 
         $datas_page = [
             "description" => "Bienvenue sur votre outil YFOKOI !",

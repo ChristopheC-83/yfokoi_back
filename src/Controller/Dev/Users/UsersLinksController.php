@@ -70,11 +70,42 @@ class UsersLinksController extends MainController
         exit;
     }
 
-    public function validateAskFriendRequest($id) : array { 
+    public function askFriendRequest($id) : array { 
         $askFriendRequest=[];
         $askFriendRequest = $this->usersLinksModel->getAskFriendRequest($id);
 
         return $askFriendRequest;
         
      }
+
+     public function validateAskFriendRequest($data): void
+     {
+        $idContact = (int) $data['idContact'];
+        $response = (int) $data['response'];
+
+
+        if (!isset($_SESSION['user_id'])) {
+            flashMessage("Vous devez être connecté pour valider une demande d'ami.", "alert-danger");
+            header('Location: ' . ROOT . 'account/login');
+            exit;
+        }
+
+        $currentUserId = $_SESSION['user_id'];
+
+        // Valider ou refuser la demande d'ami
+        if ($response === 1) {
+            $this->usersLinksModel->acceptFriendRequest($currentUserId, $idContact);
+            flashMessage("Demande d'ami acceptée avec succès !", "alert-success");
+        } else if ($response === 0) {
+            $this->usersLinksModel->rejectFriendRequest($currentUserId, $idContact);
+            flashMessage("Demande d'ami refusée avec succès !", "alert-danger");
+        } else {
+            flashMessage("Réponse invalide.", "alert-danger");
+        }
+
+        header('Location: ' . ROOT . 'account/profile');
+        exit;
+     }
+
+
 }

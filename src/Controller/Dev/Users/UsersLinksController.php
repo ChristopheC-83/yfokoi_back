@@ -11,35 +11,12 @@ use Src\Core\Utilities;
 class UsersLinksController extends MainController
 {
 
-    public function searchContact($nameSearched): void
+    public function searchContact($nameSearched): array
     {
-        $nameSearched = trim($nameSearched['nameSearched']);
+        $searchedContact =[];
+        $searchedContact = $this->usersLinksModel->searchContact($nameSearched['nameSearched']);
 
-        if (empty($nameSearched)) {
-            flashMessage("Le nom recherché ne peut pas être vide.", "alert-danger");
-            header('Location: ' . ROOT . 'account/profile');
-            exit;
-        }
-
-        $contacts = $this->usersLinksModel->searchContact($nameSearched);
-
-        if (empty($contacts)) {
-            flashMessage("Aucun contact trouvé avec le nom : " . $nameSearched, "alert-danger");
-            header('Location: ' . ROOT . 'account/profile');
-            exit;
-        }
-
-        $datas_page = [
-            "description" => "Bienvenue sur votre outil YFOKOI !",
-            "title" => "Page d'accueil",
-            "view" => "dev/pages/searchContactPage.php",
-            "layout" => "layout.php",
-            "allJS" => [],
-            "contacts" => $contacts,
-            "nameSearched" => $nameSearched,
-        ];
-
-        Utilities::renderPage($datas_page);
+        return $searchedContact;
     }
 
     public function addContact($linkedUserId): void
@@ -58,7 +35,7 @@ class UsersLinksController extends MainController
         $existingLink = $this->usersLinksModel->checkIfLinkExists($currentUserId, $linkedUserId);
         if ($existingLink) {
             flashMessage("Vous êtes déjà lié à cet utilisateur.", "alert-info");
-            header('Location: ' . ROOT . 'usersLinks/searchContact');
+            header('Location: ' . ROOT . 'usersLinks/profile');
             exit;
         }
 
@@ -75,6 +52,15 @@ class UsersLinksController extends MainController
         $askFriendRequest = $this->usersLinksModel->getAskFriendRequest($id);
 
         return $askFriendRequest;
+        
+     }
+
+          
+     public function getAcceptedFriends($id) : array { 
+        $accepedFriends=[];
+        $accepedFriends = $this->usersLinksModel->getAcceptedFriends($id);
+
+        return $accepedFriends;
         
      }
 
@@ -103,6 +89,34 @@ class UsersLinksController extends MainController
             flashMessage("Réponse invalide.", "alert-danger");
         }
 
+        header('Location: ' . ROOT . 'account/profile');
+        exit;
+     }
+
+     public function getPendingFriends($id){
+        $pendingFriends=[];
+        $pendingFriends = $this->usersLinksModel->getPendingFriends($id);
+
+        return $pendingFriends;
+
+     }
+
+     public function deleteLink($data): void
+     {
+        $idContact = (int) $data['idContact'];
+
+        if (!isset($_SESSION['user_id'])) {
+            flashMessage("Vous devez être connecté pour supprimer un contact.", "alert-danger");
+            header('Location: ' . ROOT . 'account/login');
+            exit;
+        }
+
+        $currentUserId = $_SESSION['user_id'];
+
+        // Supprimer le lien dans la base de données
+        $this->usersLinksModel->deleteLink($currentUserId, $idContact);
+
+        flashMessage("Contact supprimé avec succès !", "alert-success");
         header('Location: ' . ROOT . 'account/profile');
         exit;
      }

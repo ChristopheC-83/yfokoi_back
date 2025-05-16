@@ -17,6 +17,10 @@ switch ($path[1]) {
   case "validateAskFriendRequest":
     $usersLinksController->validateAskFriendRequest($_POST);
     break;
+  case "deleteLink":
+    $usersLinksController->deleteLink($_POST);
+    break;
+
 
   default:
     throw new Exception("La page de Lien demandée n'existe pas.");

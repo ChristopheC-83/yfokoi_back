@@ -110,12 +110,26 @@ class UsersController extends MainController
 
     public function profilePage(): void
     {
-        $asksFriends = [];
-        //  recherche des demandes d'amis
-        if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
-            $asksFriends = $this->usersLinksController->askFriendRequest($_SESSION['user_id']);
+        //  recherche des amis par nom
+        $searchedContact = [];
+        if (isset($_POST['nameSearched']) && !empty($_POST['nameSearched'])) {
+            $searchedContact = $this->usersLinksController->searchContact($_POST);
         }
 
+
+        $asksFriends = [];
+        $pendingFriends = [];
+        $acceptedFriends = [];
+        if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
+            //  recherche des demandes d'amis
+            $asksFriends = $this->usersLinksController->askFriendRequest($_SESSION['user_id']);
+            //  recherche des amis acceptés
+            $acceptedFriends = $this->usersLinksController->getAcceptedFriends($_SESSION['user_id']);
+            //  recherche des amis en attente
+            $pendingFriends = $this->usersLinksController->getPendingFriends($_SESSION['user_id']);
+        }
+
+        
 
         $datas_page = [
             "description" => "Bienvenue sur votre outil YFOKOI !",
@@ -123,7 +137,10 @@ class UsersController extends MainController
             "view" => "dev/pages/profilePage.php",
             "layout" => "layout.php",
             "allJS" => ["profileValidation.js"],
+            "searchedContact" => $searchedContact,
             "asksFriends" => $asksFriends,
+            "acceptedFriends" => $acceptedFriends,
+            "pendingFriends" => $pendingFriends,
         ];
         Utilities::renderPage($datas_page);
     }

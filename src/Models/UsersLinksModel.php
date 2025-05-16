@@ -105,4 +105,55 @@ class UsersLinksModel extends DataBase
         $stmt->closeCursor();
         return $success;
     }
+
+
+    public function getAcceptedFriends(int $userId): array
+    {
+        $req = "
+        SELECT u.id, u.name, u.email
+        FROM user u 
+        JOIN user_links ul 
+            ON ( (u.id = ul.user1_id AND ul.user2_id = :userId)
+              OR (u.id = ul.user2_id AND ul.user1_id = :userId) )
+        WHERE ul.status = 'accepted'
+    ";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+        return $result;
+    }
+
+    public function getPendingFriends($id){
+        $req = "
+        SELECT u.id, u.name, u.email
+        FROM user u 
+        JOIN user_links ul 
+            ON (u.id = ul.user2_id AND ul.user1_id = :userId)
+               
+        WHERE ul.status = 'pending'";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindValue(':userId', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+        return $result;
+
+
+    }
+
+    public function deleteLink(int $userId, int $contactId): bool
+    {
+        $req = "DELETE FROM user_links WHERE 
+        (user1_id = :userId AND user2_id = :contactId)
+        OR 
+        (user1_id = :contactId AND user2_id = :userId)";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':contactId', $contactId, PDO::PARAM_INT);
+        $success = $stmt->execute();
+        $stmt->closeCursor();
+        return $success;
+    }
 }

@@ -14,11 +14,14 @@ class UsersContextController extends MainController
 
     public function createOrUpdateUserContext($id): void
     {
-        $user =  $this->usersContextModel->getUserContextById($id);
-        if (!$user) {
+        $userContext =  $this->usersContextModel->getUserContextById($id);
+        if (!$userContext) {
             $this->usersContextModel->createUserContext($id);
         } else {
             $this->usersContextModel->updateUserContext($id);
+        }
+        if(!empty($userContext['favorite_list_id']) ) {
+            $this->usersContextModel->copyFavoriteToSelectedList($id);
         }
     }
 

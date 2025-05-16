@@ -104,7 +104,6 @@ class UsersController extends MainController
 
             //  on crée ou on met à jour le userContext
             $this->userContextController->createOrUpdateUserContext($_SESSION['user_id']);
-            $this->userContextController->copyFavoriteToSelectedList($_SESSION['user_id']);
             
             
 

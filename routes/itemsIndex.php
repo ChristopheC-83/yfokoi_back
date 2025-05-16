@@ -8,28 +8,28 @@ switch ($path[1]) {
 
 
      case "addItem":
-        $listsController->addItem($_POST);
+        $itemsController->addItem($_POST);
         break;
     case "itemIsDone":
-        $listsController->itemIsDone($_POST);
+        $itemsController->itemIsDone($_POST);
         break;
     case "editMode":
-        $listsController->editMode($_POST);
+        $itemsController->editMode($_POST);
         break;
     case "updateItem":
-        $listsController->updateItem($_POST);
+        $itemsController->updateItem($_POST);
         break;
     
     case "deleteItem":
-        $listsController->deleteItem($_POST);
+        $itemsController->deleteItem($_POST);
         break;
     case "deleteAllDone":
-        $listsController->deleteAllDone($_POST);
+        $itemsController->deleteAllDone($_POST);
         break;
 
 
     case "exitEditMode":
-        $listsController->exitEditMode();
+        $itemsController->exitEditMode();
         break;
 
 

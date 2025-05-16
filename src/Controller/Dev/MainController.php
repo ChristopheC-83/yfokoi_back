@@ -21,7 +21,6 @@ class MainController
     public $validationService;
     public $listsModel;
     public $usersLinksModel;
-    // public $usersLinksController;
     public $itemsModel;
 
     public $usersContextModel;
@@ -35,8 +34,6 @@ class MainController
         // $this->usersLinksController = new UsersLinksController();
         $this->itemsModel = new ItemsModel();
         $this->usersContextModel = new UsersContextModel();
-
-
     }
 
     public function homePage()
@@ -46,22 +43,24 @@ class MainController
         $items_list = [];
         $list_name = "";
         $deleteAllDoneBtn = false;
+        $context = null;
 
         if (isset($_SESSION['user_id'])) {
             $listsOfUser = $this->listsModel->getAllListsByUserId($_SESSION['user_id']);
+            $context = $this->usersContextModel->getUserContextById($_SESSION['user_id']);
         }
-        if (isset($_SESSION['selected_list_id'])) {
-            $items_list = $this->listsModel->getAllItemsByListId($_SESSION['selected_list_id']);
-            $list_name = $this->listsModel->getListNameById($_SESSION['selected_list_id']);
-
-            // ✅ Vérification s'il y a des éléments cochés
-            foreach ($items_list as $item) {
-                if ($item['is_done'] == 1) {
-                    $deleteAllDoneBtn = true;
-                    break;
-                }
+         if(isset($context['selected_list_id']) && !empty($context['selected_list_id'])  && $context['selected_list_id'] !=null) {
+            $items_list = $this->listsModel->getAllItemsByListId($context['selected_list_id']);
+        }
+     
+        // ✅ Vérification s'il y a des éléments cochés
+        foreach ($items_list as $item) {
+            if ($item['is_done'] == 1) {
+                $deleteAllDoneBtn = true;
+                break;
             }
         }
+
 
 
         $datas_page = [
@@ -73,6 +72,7 @@ class MainController
             "items_list" => $items_list,
             "list_name" => $list_name,
             "deleteAllDoneBtn" => $deleteAllDoneBtn,
+            "context" => $context,
         ];
 
         Utilities::renderPage($datas_page);

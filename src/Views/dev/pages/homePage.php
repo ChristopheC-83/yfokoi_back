@@ -1,4 +1,5 @@
-<?=  dump($_SESSION) ?>
+<?= dump($_SESSION) ?>
+<?= dump($context) ?>
 
 <?php if (!empty($_SESSION['name'])) : ?>
 
@@ -16,23 +17,36 @@
                 <option value="">Sélectionner une liste perso à afficher</option>
                 <?php foreach ($listsOfUser as $list): ?>
                     <option value="<?= $list['id'] ?>"
-                        <?= ($list['id'] == ($_SESSION['selected_list_id'] ?? null)) ? 'selected' : '' ?>><?= $list['name'] ?>
+                        <?= ($list['id'] == ($context['selected_list_id'] ?? null)) ? 'selected' : '' ?>><?= $list['name'] ?>
                     </option>
                 <?php endforeach; ?>
             </select>
         </form>
 
-        <?php if (isset($_SESSION['selected_list_id'])): ?>
-            <form action="<?= ROOT ?>lists/deleteList" class="col-2" onSubmit="return confirm('On supprime cette liste ?')">
-                <button class="btn btn-danger w-100">Supprimer</button>
-            </form>
+        <?php if (isset($context['selected_list_id'])): ?>
+            <div class="d-flex gap-4 align-items-center ms-4">
+                <?php if ($context['favorite_list_id'] !== $context['selected_list_id']) : ?>
+                    <form action="<?= ROOT ?>userContext/favoriteList" class="" method="POST">
+                        <input type="hidden" name="id_list" value="<?= $context['selected_list_id'] ?>">
+                        <button class="btn btn-info ">🤍</button>
+                    </form>
+                <?php else: ?>
+                    <form action="<?= ROOT ?>userContext/unsetFavoriteList" class="" method="POST">
+                        <button class="btn btn-info ">❤️</button>
+                    </form>
+                <?php endif ?>
+                <form action="<?= ROOT ?>lists/deleteList" class="" onSubmit="return confirm('On supprime cette liste ?')">
+                    <input type="hidden" name="id_list" value="<?= $context['selected_list_id'] ?>">
+                    <button class="btn btn-danger">Supprimer</button>
+                </form>
+            </div>
         <?php endif ?>
     </div>
 
     <form action="<?= ROOT ?>items/addItem" class="d-flex gap-3 mb-4" method="POST">
 
-        <?php if (isset($_SESSION['selected_list_id'])): ?>
-            <input type="hidden" name="selected_list_id" value="<?= $_SESSION['selected_list_id'] ?>">
+        <?php if (isset($context['selected_list_id'])): ?>
+            <input type="hidden" name="selected_list_id" value="<?= $context['selected_list_id'] ?>">
         <?php endif ?>
         <input type="hidden" name="created_by" value="<?= $_SESSION['name'] ?>">
         <input type="text" class="form-control w-75" id="content" name="content"
@@ -40,7 +54,7 @@
         <button class="btn btn-success col-2">Ajouter</button>
     </form>
 
-    <?php if (isset($_SESSION['selected_list_id'])): ?>
+    <?php if (isset($context['selected_list_id'])): ?>
         <h2 class="text-center text-decoration-underline mt-5">Eléments de la liste : <?= $list_name ?></h2>
         <!-- <?= dump($items_list) ?> -->
         <?php foreach ($items_list as $item): ?>
@@ -81,7 +95,7 @@
         <?php endforeach; ?>
         <?php if ($deleteAllDoneBtn): ?>
             <form action="<?= ROOT ?>items/deleteAllDone" method="POST" class="d-flex justify-content-center mt-4">
-                <input type="hidden" name="id_list" value="<?= $_SESSION['selected_list_id'] ?>">
+                <input type="hidden" name="id_list" value="<?= $context['selected_list_id'] ?>">
                 <button class="btn btn-info">
                     <p class="fs-3 bold align-center mb-2">Supprimer tous les éléments cochés</p>
                 </button>

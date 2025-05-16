@@ -13,8 +13,14 @@ switch ($path[1]) {
     case "selectList":
         $listsController->selectList($_POST);
         break;
+    // case "favoriteList":
+    //     $listsController->favoriteList($_POST);
+    //     break;
+    // case "favoriteListRemove":
+    //     $listsController->favoriteListRemove($_POST);
+    //     break;
     case "deleteList":
-        $listsController->deleteList();
+        $listsController->deleteList($_POST);
         break;
    
 

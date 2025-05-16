@@ -61,6 +61,9 @@ try {
         case "usersLinks":
             require_once BASE_DIR . "/routes/usersLinksIndex.php";
             break;
+        case "userContext":
+            require_once BASE_DIR . "/routes/userContextIndex.php";
+            break;
 
         default:
             throw new Exception("La page demandée n'existe pas !!!");

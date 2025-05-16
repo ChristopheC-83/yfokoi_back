@@ -42,7 +42,7 @@
 
 
 
-<!--  Les demandes d'ajout de mon compte vers un tiers -->
+<!--  Les demandes d'ajout reçues de tiers -->
 <?php if (isset($asksFriends) && !empty($asksFriends)): ?>
     <hr class="my-5">
     <h2 class="text-decoration-underline mb-3">Mes demandes d'ajout<span class="fs-6"> (à valider)</span></h2>
@@ -72,12 +72,12 @@
     <?php endforeach ?>
 <?php endif ?>
 
-<!--  Les demandes d'ajout reçues -->
+<!--  Les demandes d'ajout envoyées -->
 <?php if (isset($pendingFriends) && !empty($pendingFriends)): ?>
     <hr class="my-5">
     <h2 class="text-decoration-underline mb-3">Mes demandes d'ajout envoyées<span class="fs-6"> (en attente)</span></h2>
     <?php foreach ($pendingFriends as $friend): ?>
-         <div class="col-12 col-md-9  mb-4 border border-black border-2 rounded-3 p-2 d-flex align-items-center gap-3 mb-3 justify-content-between">
+         <div class="col-12 col-md-9  mb-4 border border-black border-2 rounded-3 px-2 py-3 d-flex align-items-center gap-3 mb-3 justify-content-between">
             <div class="d-flex flex-column">
                 <p class="mb-0 w-50 fs-3"><?= $friend['name'] ?></p>
             </div>

@@ -11,53 +11,9 @@ use Src\Core\Utilities;
 
 class ItemsController extends MainController
 {
-    public function createList($datas): void
-    {
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] != $datas['owner_id']) {
-            flashMessage("Vous ne pouvez pas créer une liste pour un autre utilisateur.", "alert-danger");
-            header('Location: ' . ROOT . 'accueil');
-            exit;
-        }
+    
 
-        if (empty($datas['name']) || trim($datas['name']) === '') {
-            flashMessage("Le nom de la liste ne peut pas être vide.", "alert-danger");
-            header('Location: ' . ROOT . 'accueil');
-            exit;
-        }
-
-        $owner_id = $_SESSION['user_id'];
-        $name = htmlspecialchars($datas['name']);
-
-        if ($this->listsModel->listNameExists($name, $owner_id)) {
-            flashMessage("Vous avez déjà une liste avec ce nom.", "alert-danger");
-            header('Location: ' . ROOT . 'accueil');
-            exit;
-        }
-
-        if ($this->listsModel->createNewList($name, $owner_id)) {
-            flashMessage("Liste créée avec succès.", "alert-success");
-        } else {
-            flashMessage("Erreur lors de la création de la liste.", "alert-danger");
-        }
-
-        header('Location: ' . ROOT . 'accueil');
-        exit;
-    }
-
-    public function selectList($datas): void
-    {
-
-        // dd($datas);
-        if (empty($datas['list_id'])) {
-            unset($_SESSION['selected_list_id']);
-            header('Location: ' . ROOT . 'accueil');
-            exit;
-        }
-
-        $_SESSION['selected_list_id'] = (int) $datas['list_id'];
-        header('Location: ' . ROOT . 'accueil'); // ou autre redirection logique
-        exit;
-    }
+    
 
     public function addItem($datas): void
     {
@@ -185,24 +141,5 @@ public function updateItem($datas): void
         exit;
     }
 
-    public function deleteList(): void
-    {
-
-        // dd($_SESSION['selected_list_id']);
-        if (!isset($_SESSION['selected_list_id'])) {
-            flashMessage("ID invalide", "alert-danger");
-            header('Location: ' . ROOT . 'accueil');
-            exit;
-        }
-
-        $list_id = (int)$_SESSION['selected_list_id'];
-
-        if ($this->listsModel->deleteList($list_id)) {
-            $_SERVER['selected_list_id'] = null;
-            flashMessage("Liste supprimée avec succès.", "alert-success");
-        } else {
-            flashMessage("Erreur lors de la suppression de la liste.", "alert-danger");
-        }
-        header('Location: ' . ROOT . 'accueil');
-    }
+   
 }

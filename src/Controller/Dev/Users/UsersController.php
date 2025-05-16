@@ -14,11 +14,13 @@ class UsersController extends MainController
 
 
     public $usersLinksController;
+    public $userContextController;
 
     public function __construct()
     {
         parent::__construct();
         $this->usersLinksController = new UsersLinksController();
+        $this->userContextController = new UsersContextController();
     }
 
 
@@ -90,6 +92,9 @@ class UsersController extends MainController
         if (!$user) {
             $user = $this->usersModel->getUserByEmail($identifier);
         }
+
+
+
         if ($user && password_verify($password, $user['hashed_password'])) {
             // Authentification réussie et connexion avec $_Session
             $_SESSION['user_id'] = $user['id'];
@@ -97,6 +102,11 @@ class UsersController extends MainController
             $_SESSION['email'] = $user['email'];
             $_SESSION['role'] = $user['role'];
 
+            //  on crée ou on met à jour le userContext
+            $this->userContextController->createOrUpdateUserContext($_SESSION['user_id']);
+            $this->userContextController->copyFavoriteToSelectedList($_SESSION['user_id']);
+            
+            
 
             flashMessage('Connexion réussie.', 'alert-success');
             header('Location: ' . ROOT . '/');
@@ -108,7 +118,7 @@ class UsersController extends MainController
         }
     }
 
-    public function profilePage(): void
+    public function profilePage()
     {
         //  recherche des amis par nom
         $searchedContact = [];
@@ -129,7 +139,7 @@ class UsersController extends MainController
             $pendingFriends = $this->usersLinksController->getPendingFriends($_SESSION['user_id']);
         }
 
-        
+
 
         $datas_page = [
             "description" => "Bienvenue sur votre outil YFOKOI !",
@@ -147,6 +157,7 @@ class UsersController extends MainController
 
     public function logout()
     {
+        
         // Supprimer uniquement les variables de session spécifiques à l'utilisateur
         $_SESSION = [];
         session_destroy();

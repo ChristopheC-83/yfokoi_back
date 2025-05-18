@@ -8,6 +8,7 @@ use Src\Controller\Dev\Users\UsersLinksController;
 use Src\Core\Utilities;
 use Src\Models\ItemsModel;
 use Src\Models\ListsModel;
+use Src\Models\ManagementListsModel;
 use Src\Models\UsersContextModel;
 use Src\Models\UsersLinksModel;
 use Src\Models\UsersModel;
@@ -22,8 +23,8 @@ class MainController
     public $listsModel;
     public $usersLinksModel;
     public $itemsModel;
-
     public $usersContextModel;
+    public $managementListsModel;
 
     public function __construct()
     {
@@ -34,6 +35,7 @@ class MainController
         // $this->usersLinksController = new UsersLinksController();
         $this->itemsModel = new ItemsModel();
         $this->usersContextModel = new UsersContextModel();
+        $this->managementListsModel = new ManagementListsModel();
     }
 
     public function homePage()

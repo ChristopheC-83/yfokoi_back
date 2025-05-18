@@ -105,6 +105,7 @@ class UsersLinksModel extends DataBase
         $stmt->closeCursor();
         return $success;
     }
+    
 
 
     public function getAcceptedFriends(int $userId): array

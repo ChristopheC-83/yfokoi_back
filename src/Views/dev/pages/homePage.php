@@ -1,5 +1,5 @@
-<?= dump($_SESSION) ?>
-<?= dump($context) ?>
+<!-- <?= dump($_SESSION) ?>
+<?= dump($context) ?> -->
 
 <?php if (!empty($_SESSION['name'])) : ?>
 
@@ -18,6 +18,7 @@
                 <?php foreach ($listsOfUser as $list): ?>
                     <option value="<?= $list['id'] ?>"
                         <?= ($list['id'] == ($context['selected_list_id'] ?? null)) ? 'selected' : '' ?>><?= $list['name'] ?>
+
                     </option>
                 <?php endforeach; ?>
             </select>
@@ -35,9 +36,12 @@
                         <button class="btn btn-info ">❤️</button>
                     </form>
                 <?php endif ?>
+                <a href="<?= ROOT ?>managementLists/myLists/<?= $context['selected_list_id'] ?>" class="btn btn-secondary">
+                    <i class="fa-solid fa-share-nodes fa-lg"></i>
+                </a>
                 <form action="<?= ROOT ?>lists/deleteList" class="" onSubmit="return confirm('On supprime cette liste ?')">
                     <input type="hidden" name="id_list" value="<?= $context['selected_list_id'] ?>">
-                    <button class="btn btn-danger">Supprimer</button>
+                    <button class="btn btn-danger"><i class="fa-solid fa-trash-can fa-lg"></i></button>
                 </form>
             </div>
         <?php endif ?>
@@ -49,8 +53,7 @@
             <input type="hidden" name="selected_list_id" value="<?= $context['selected_list_id'] ?>">
         <?php endif ?>
         <input type="hidden" name="created_by" value="<?= $_SESSION['name'] ?>">
-        <input type="text" class="form-control w-75" id="content" name="content"
-            placeholder="Ajouter à la liste" autofocus>
+        <input type="text" class="form-control w-75" id="content" name="content" placeholder="Ajouter à la liste" autofocus>
         <button class="btn btn-success col-2">Ajouter</button>
     </form>
 
@@ -69,7 +72,8 @@
                         <!-- Formulaire de modification -->
                         <form action="<?= ROOT ?>items/updateItem" method="POST" class="d-flex gap-2">
                             <input type="hidden" name="id" value="<?= $item['id'] ?>">
-                            <input type="text" name="new_content" class="form-control" value="<?= htmlspecialchars($item['content']) ?>">
+                            <input type="text" name="new_content" class="form-control"
+                                value="<?= htmlspecialchars($item['content']) ?>">
                             <button class="btn btn-success">💾</button>
                         </form>
                         <form action="<?= ROOT ?>items/exitEditMode" method="POST">

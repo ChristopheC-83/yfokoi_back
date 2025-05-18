@@ -6,6 +6,7 @@ use Src\Controller\Dev\Items\ItemsController;
 use Src\Controller\Dev\MainController;
 use Src\Controller\Dev\Users\UsersController;
 use Src\Controller\Dev\Lists\ListsController;
+use Src\Controller\Dev\Lists\ManagementListsController;
 use Src\Controller\Dev\Users\UsersContextController;
 use Src\Controller\Dev\Users\UsersLinksController;
 
@@ -33,6 +34,8 @@ $listsController = new ListsController();
 $itemsController = new ItemsController();
 $usersLinksController = new UsersLinksController();
 $usersContextController = new UsersContextController();
+$managementListsController = new ManagementListsController();
+
 
 try {
     if (empty($_GET['page'])) {
@@ -63,6 +66,9 @@ try {
             break;
         case "userContext":
             require_once BASE_DIR . "/routes/userContextIndex.php";
+            break;
+        case "managementLists":
+            require_once BASE_DIR . "/routes/managementListsIndex.php";
             break;
 
         default:

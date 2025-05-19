@@ -17,23 +17,19 @@
 </form>
 <hr class="my-3">
 <h2>Je souhaite la partager avec :</h2>
+<?= dump($levels)  ?>
 <form action="<?= ROOT ?>managementLists/modifyListAccess" method="post" class="w-100 d-flex gap-3">
     <input type="hidden" name="list_id" value="<?= $selected_list['id'] ?>">
-    <select name="user_id" id="user_id" class="form-select w-25" >
+    <select name="user_id" id="user_id" class="form-select w-25">
         <option value="">Sélectionner un ami</option>
         <?php foreach ($myFriends as $myFriend): ?>
-            <option value="<?= $myFriend['id'] ?>"><?= $myFriend['name']?></option>
+            <option value="<?= $myFriend['id'] ?>"><?= $myFriend['name'] ?></option>
         <?php endforeach; ?>
     </select>
-    <select name="access_level" id="access_level" class="form-select w-50" >
-        <option value="">Sélectionner le niveau d'accès</option>
-        <option value="read">Pour qu'il puisse lire</option>
-        <option value="read_create">Pour qu'il puisse lire et ajouter une note</option>
-        <option value="read_create_own_modify">Pour qu'il puisse lire, ajouter et modifier/supprimer ses notes</option>
-        <option value="read_create_all_modify">Pour qu'il puisse lire, ajouter et tout modifier/supprimer </option>
-    </select>
+    <select name="access_level" id="access_level" class="form-select w-50">
+        <?php foreach ($levels as  $key => $level): ?>
+            <option value="<?= $key ?>"><?= $level['label'] ?></option>
+        <?php endforeach; ?>
+    </select>    
     <button class="btn btn-success col-2">Ajouter</button>
-
-
-
 </form>

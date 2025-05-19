@@ -10,6 +10,9 @@ switch ($path[1]) {
      case "myLists":
         $managementListsController->managementListsPage($path[2]);
         break;
+     case "modifyListAccess":
+        dump($_POST);
+        break;
     
 
 

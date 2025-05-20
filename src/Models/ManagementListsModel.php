@@ -17,7 +17,6 @@ class ManagementListsModel extends DataBase
         $stmt->bindValue(':list_id', $list_id, PDO::PARAM_INT);
         $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
         $stmt->execute();
-
         $count = $stmt->fetchColumn();
         return $count > 0; // Retourne true si un partage existe déjà, sinon false
     }
@@ -39,8 +38,18 @@ class ManagementListsModel extends DataBase
         foreach ($permissions as $column => $value) {
             $stmt->bindValue(":$column", $value, PDO::PARAM_BOOL);
         }
-
         return $stmt->execute();
+    }
+
+    public function getUserAccessByList($list_id): ?array
+    {
+        $req = "SELECT * FROM lists_access WHERE list_id = :list_id ";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindValue(':list_id', $list_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+        return $result ?: null;
     }
 
 

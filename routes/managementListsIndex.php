@@ -7,16 +7,19 @@ if (empty($path[1])) {
 switch ($path[1]) {
 
 
-     case "myLists":
+    case "myLists":
+        if (empty($path[2])) {
+            $path[2] = -1;
+        }
         $managementListsController->managementListsPage($path[2]);
         break;
-     case "modifyListAccess":
-        dump($_POST);
+    case "modifyListAccess":
+        $managementListsController->modifyListAccess($_POST);
         break;
-    
 
 
-   
+
+
 
 
     default:

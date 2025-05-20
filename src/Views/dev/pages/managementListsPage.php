@@ -17,7 +17,6 @@
 </form>
 <hr class="my-3">
 <h2>Je souhaite la partager avec :</h2>
-<?= dump($levels)  ?>
 <form action="<?= ROOT ?>managementLists/modifyListAccess" method="post" class="w-100 d-flex gap-3">
     <input type="hidden" name="list_id" value="<?= $selected_list['id'] ?>">
     <select name="user_id" id="user_id" class="form-select w-25">

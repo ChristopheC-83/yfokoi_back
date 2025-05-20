@@ -29,22 +29,30 @@ class ManagementListsController extends MainController
     }
 
     public function managementListsPage($id_list): void
-    {
-        if ($_SESSION['user_id'] == null) {
-            flashMessage("Vous devez être connecté pour accéder à cette page", "alert-danger");
-            redirect(ROOT . "account/connection");
-            exit();
-        }
-        $allListOfUser = $this->listsModel->getAllListsByUserId($_SESSION['user_id']);
-        $selected_list_id = (int)htmlspecialchars($id_list);
-        $selected_list = null;
-        $myFriends = $this->usersLinksModel->getAcceptedFriends($_SESSION['user_id']);
 
-        if (empty($selected_list_id)) {
-            throw new Exception("La liste demandée n'existe pas.");
-        }
-        if (!empty($this->listsModel->getListById($selected_list_id))) {
-            $selected_list = $this->listsModel->getListById($selected_list_id);
+    {
+
+        if ($id_list != -1) {
+            if ($_SESSION['user_id'] == null) {
+                flashMessage("Vous devez être connecté pour accéder à cette page", "alert-danger");
+                redirect(ROOT . "account/connection");
+                exit();
+            }
+            $allListOfUser = $this->listsModel->getAllListsByUserId($_SESSION['user_id']);
+            $selected_list_id = (int)htmlspecialchars($id_list);
+            $selected_list = null;
+            $myFriends = $this->usersLinksModel->getAcceptedFriends($_SESSION['user_id']);
+
+            if (empty($selected_list_id)) {
+                throw new Exception("La liste demandée n'existe pas.");
+            }
+            if (!empty($this->listsModel->getListById($selected_list_id))) {
+                $selected_list = $this->listsModel->getListById($selected_list_id);
+            }
+        } else {
+            $selected_list = null;
+            $allListOfUser = $this->listsModel->getAllListsByUserId($_SESSION['user_id']);
+            $myFriends = $this->usersLinksModel->getAcceptedFriends($_SESSION['user_id']);
         }
 
         $levels = self::getLevels();
@@ -65,4 +73,32 @@ class ManagementListsController extends MainController
 
         Utilities::renderPage($datas_page);
     }
+
+    function modifyListAccess(array $data): void
+    {
+        if (empty($data['list_id']) || empty($data['user_id']) || empty($data['access_level'])) {
+            flashMessage("Tous les champs sont obligatoires", "alert-danger");
+            redirect(ROOT . "managementLists/myLists");
+            exit();
+        }
+
+        $list_id = (int)htmlspecialchars($data['list_id']);
+        $user_id = (int)htmlspecialchars($data['user_id']);
+        $accessLevel = htmlspecialchars($data['access_level']);
+
+        $isShareExist = $this->managementListsModel->checkIfShareExists($list_id, $user_id);
+        if ($isShareExist) {
+            $this->managementListsModel->updateUserToList($list_id, $user_id, $accessLevel);
+            
+        flashMessage("L'utilisateur a été ajouté à la liste avec succès", "alert-success");
+        } else {
+            $this->managementListsModel->addUserToList($list_id, $user_id, $accessLevel);
+            flashMessage("Les droits de l'utilisateur ont été modifié avec succès", "alert-success");
+        }
+
+        
+
+        redirect(ROOT . "managementLists/myLists/$list_id");
+    }
+
 }

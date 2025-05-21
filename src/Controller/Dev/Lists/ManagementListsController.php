@@ -141,4 +141,21 @@ class ManagementListsController extends MainController
 
         redirect(ROOT . "managementLists/myLists/$list_id");
     }
+
+    public function deleteListAccess(array $data): void
+    {
+        if (empty($data['list_id']) || empty($data['user_id'])) {
+            flashMessage("Tous les champs sont obligatoires", "alert-danger");
+            redirect(ROOT . "managementLists/myLists");
+            exit();
+        }
+
+        $list_id = (int)$data['list_id'];
+        $user_id = (int)$data['user_id'];
+
+        $this->managementListsModel->deleteUserFromList($list_id, $user_id);
+        flashMessage("L'utilisateur a été supprimé de la liste avec succès", "alert-success");
+
+        redirect(ROOT . "managementLists/myLists/$list_id");
+    }
 }

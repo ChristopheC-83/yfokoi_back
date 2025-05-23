@@ -13,93 +13,28 @@ use Src\Core\Utilities;
 class ManagementListsController extends MainController
 {
 
-    public static array $levels = [
-        '' => [
-            'label' => 'Sélectionner le niveau d\'accès',
-            'permissions' => [],
-        ],
-        'read' => [
-            'label' => 'Lire la liste',
-            'permissions' => ['read'],
-        ],
-        'read_create' => [
-            'label' => 'Lire + Ajouter',
-            'permissions' => ['read', 'create'],
-        ],
-        'read_create_manage_own' => [
-            'label' => 'Lire + Ajouter + Gérer ses notes',
-            'permissions' => ['read', 'create', 'manage_own'],
-        ],
-        'read_create_manage_all' => [
-            'label' => 'Lire + Ajouter + Gérer toutes les notes',
-            'permissions' => ['read', 'create', 'manage_all'],
-        ],
-    ];
-
-
-
-    public static function getLevels(): array
+    public function managementListsPage(array $datas): void
     {
-        return self::$levels;
-    }
-
-    public function describePermissions(array $permissions): string
-    {
-        $actions = [];
-
-        if (!empty($permissions['can_read'])) {
-            $actions[] = 'lire';
-        }
-        if (!empty($permissions['can_create'])) {
-            $actions[] = 'ajouter';
-        }
-        if (!empty($permissions['can_manage_own_items'])) {
-            $actions[] = 'gérer ses propres notes';
-        }
-        if (!empty($permissions['can_manage_all_items'])) {
-            $actions[] = 'gérer toutes les notes';
-        }
-
-        return !empty($actions) ? implode(', ', $actions) : 'aller se recoucher...';
-    }
-
-    public function managementListsPage(int $id_list = -1): void
-    {
+        // dd($datas);
         if (empty($_SESSION['user_id'])) {
             flashMessage("Vous devez être connecté pour accéder à cette page", "alert-danger");
             redirect(ROOT . "account/connection");
             exit();
         }
 
-        $userId = (int)$_SESSION['user_id'];
-        $allListOfUser = $this->listsModel->getAllListsByUserId($userId);
-        $myFriends = $this->usersLinksModel->getAcceptedFriends($userId);
-        $selected_list = null;
-        $usersAccessToList = [];
+        $allListOfUser = $this->listsModel->getAllListsByUserId($_SESSION['user_id']);
+        $id_list = htmlentities($datas['id_list']);
+        $selected_list = $this->listsModel->getListById($id_list);
+        
+        // dd($selected_list);
+        // if (is_null($selected_list) || $selected_list['owner_id'] != $_SESSION['user_id']) {
+        //     flashMessage("Vous n'avez pas accès à cette liste", "alert-danger");
+        //     redirect(ROOT . "managementLists/myLists");
+        //     exit();
+        // }
 
-        if ($id_list !== -1) {
-            $selected_list = $this->listsModel->getListById($id_list);
-            if (!$selected_list) {
-                throw new Exception("La liste demandée n'existe pas.");
-            }
-            $usersAccessToList = $this->managementListsModel->getUserAccessByList($id_list);
-        }
 
-        $levels = self::getLevels();
 
-        $sharedUsers = [];
-        $usersAccessToList = $usersAccessToList ?? [];
-        foreach ($usersAccessToList as $access) {
-            $friend = array_filter($myFriends, fn($f) => $f['id'] === $access['user_id']);
-            $friend = array_values($friend)[0] ?? null;
-            if ($friend) {
-                $sharedUsers[] = [
-                    'name' => $friend['name'],
-                    'user_id' => $friend['id'],
-                    'permissions' => $this->describePermissions($access),
-                ];
-            }
-        }
 
         $datas_page = [
             "description" => "Bienvenue sur votre outil YFOKOI !",
@@ -109,9 +44,7 @@ class ManagementListsController extends MainController
             "allJS" => [],
             "allListOfUser" => $allListOfUser,
             "selected_list" => $selected_list,
-            "myFriends" => $myFriends,
-            "levels" => $levels,
-            "sharedUsers" => $sharedUsers,
+
         ];
 
         Utilities::renderPage($datas_page);

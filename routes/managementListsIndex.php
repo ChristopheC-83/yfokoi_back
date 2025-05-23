@@ -8,10 +8,7 @@ switch ($path[1]) {
 
 
     case "myLists":
-        if (empty($path[2])) {
-            $path[2] = -1;
-        }
-        $managementListsController->managementListsPage($path[2]);
+        $managementListsController->managementListsPage($_POST);
         break;
     case "modifyListAccess":
         $managementListsController->modifyListAccess($_POST);

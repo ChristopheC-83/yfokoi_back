@@ -18,7 +18,6 @@
                 <?php foreach ($listsOfUser as $list): ?>
                     <option value="<?= $list['id'] ?>"
                         <?= ($list['id'] == ($context['selected_list_id'] ?? null)) ? 'selected' : '' ?>><?= $list['name'] ?>
-
                     </option>
                 <?php endforeach; ?>
             </select>
@@ -36,9 +35,12 @@
                         <button class="btn btn-info ">❤️</button>
                     </form>
                 <?php endif ?>
-                <a href="<?= ROOT ?>managementLists/myLists/<?= $context['selected_list_id'] ?>" class="btn btn-secondary">
-                    <i class="fa-solid fa-share-nodes fa-lg"></i>
-                </a>
+                <form action="<?= ROOT ?>managementLists/myLists" method="post">
+                    <input type="hidden" name="id_list" value="<?= $context['selected_list_id'] ?>">
+                    <button class="btn btn-secondary">
+                        <i class="fa-solid fa-share-nodes fa-lg"></i>
+                    </button>
+                </form>
                 <form action="<?= ROOT ?>lists/deleteList" class="" onSubmit="return confirm('On supprime cette liste ?')">
                     <input type="hidden" name="id_list" value="<?= $context['selected_list_id'] ?>">
                     <button class="btn btn-danger"><i class="fa-solid fa-trash-can fa-lg"></i></button>

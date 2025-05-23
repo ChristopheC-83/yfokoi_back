@@ -68,7 +68,7 @@ class ListsModel extends DataBase
         $stmt->closeCursor();
         return $result['name'] ?? '';
     }
-    public function getListById(int $id_list): array
+    public function getListById( $id_list): ?array
     {
         $req = "SELECT * FROM lists WHERE id = :id_list";
         $stmt = $this->setDB()->prepare($req);

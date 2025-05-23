@@ -61,10 +61,11 @@ class ListsController extends MainController
             header('Location: ' . ROOT . 'accueil');
             exit;
         }
+        $list_id = !empty($datas['list_id']) ? (int) $datas['list_id'] : null;
 
-        $this->userContextController->createOrUpdateSelectedList($_SESSION['user_id'], $datas['list_id']);
+        $this->userContextController->createOrUpdateSelectedList($_SESSION['user_id'], $list_id);
 
-        header('Location: ' . ROOT . 'accueil'); 
+        header('Location: ' . ROOT . 'accueil');
         exit;
     }
 

@@ -55,7 +55,7 @@ class UsersContextModel extends DataBase
         $req = "UPDATE user_context SET selected_list_id = :listId WHERE user_id = :userId";
         $stmt = $this->setDB()->prepare($req);
         $stmt->bindParam(':userId', $user_id, PDO::PARAM_INT);
-        $stmt->bindParam(':listId', $list_id, PDO::PARAM_INT);
+        $stmt->bindValue(':listId', $list_id !== null ? $list_id : null, $list_id !== null ? PDO::PARAM_INT : PDO::PARAM_NULL);
         $success = $stmt->execute();
         $stmt->closeCursor();
         return $success;

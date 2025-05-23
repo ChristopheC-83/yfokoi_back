@@ -24,15 +24,24 @@ class ManagementListsController extends MainController
 
         $allListOfUser = $this->listsModel->getAllListsByUserId($_SESSION['user_id']);
         $id_list = htmlentities($datas['id_list']);
-        $selected_list = $this->listsModel->getListById($id_list);
-        
-        // dd($selected_list);
-        // if (is_null($selected_list) || $selected_list['owner_id'] != $_SESSION['user_id']) {
-        //     flashMessage("Vous n'avez pas accès à cette liste", "alert-danger");
-        //     redirect(ROOT . "managementLists/myLists");
-        //     exit();
-        // }
+        if (!is_numeric($id_list) || $id_list < 0) {
+            flashMessage("L'identifiant de la liste est invalide", "alert-danger");
+            redirect(ROOT . "managementLists/myLists");
+            exit();
+        } else {
+            $selected_list = $this->listsModel->getListById($id_list);
+        }
 
+        // dd($selected_list);
+        if (is_null($selected_list) || $selected_list['owner_id'] != $_SESSION['user_id']) {
+            flashMessage("Vous n'avez pas accès à cette liste", "alert-danger");
+            redirect(ROOT . "managementLists/myLists");
+            exit();
+        }
+
+        $allFriends = $this->usersLinksModel->getAcceptedFriends($_SESSION['user_id']);
+        $accessLevels = $this->accessLevelsModel->getAllAccessLevels();
+       
 
 
 
@@ -44,6 +53,8 @@ class ManagementListsController extends MainController
             "allJS" => [],
             "allListOfUser" => $allListOfUser,
             "selected_list" => $selected_list,
+            "allFriends" => $allFriends,
+            "accessLevels" => $accessLevels,
 
         ];
 

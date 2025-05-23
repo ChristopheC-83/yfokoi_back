@@ -6,6 +6,7 @@ namespace Src\Controller\Dev;
 
 use Src\Controller\Dev\Users\UsersLinksController;
 use Src\Core\Utilities;
+use Src\Models\AccessLevels;
 use Src\Models\ItemsModel;
 use Src\Models\ListsModel;
 use Src\Models\ManagementListsModel;
@@ -25,6 +26,7 @@ class MainController
     public $itemsModel;
     public $usersContextModel;
     public $managementListsModel;
+    public $accessLevelsModel;
 
     public function __construct()
     {
@@ -32,10 +34,10 @@ class MainController
         $this->validationService = new ValidationSercice();
         $this->listsModel = new ListsModel();
         $this->usersLinksModel = new UsersLinksModel();
-        // $this->usersLinksController = new UsersLinksController();
         $this->itemsModel = new ItemsModel();
         $this->usersContextModel = new UsersContextModel();
         $this->managementListsModel = new ManagementListsModel();
+        $this->accessLevelsModel = new AccessLevels();
     }
 
     public function homePage()

@@ -15,9 +15,15 @@
         <form action="<?= ROOT ?>lists/selectList" method="POST" class=" w-75">
             <select name="list_id" class="form-select" onchange="submit()">
                 <option value="">Sélectionner une liste perso à afficher</option>
-                <?php foreach ($listsOfUser as $list): ?>
+                <?php foreach ($myLists as $list): ?>
                     <option value="<?= $list['id'] ?>"
-                        <?= ($list['id'] == ($context['selected_list_id'] ?? null)) ? 'selected' : '' ?>><?= $list['name'] ?>
+                        <?= ($list['id'] == ($context['selected_list_id'] ?? null)) ? 'selected' : '' ?>><?= $list['id']." - ".$list['name'] ?>
+                    </option>
+                <?php endforeach; ?>
+                <?php foreach ($sharedLists as $list): ?>
+                    <option value="<?= $list['list_id'] ?>"
+                        <?= ($list['list_id'] == ($context['selected_list_id'] ?? null)) ? 'selected' : '' ?>>
+                        <?=$list['list_id']." - ". $list['name'] ?> de <?= $list['author_name'] ?>
                     </option>
                 <?php endforeach; ?>
             </select>

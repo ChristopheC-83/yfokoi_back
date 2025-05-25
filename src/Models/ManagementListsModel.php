@@ -36,17 +36,27 @@ class ManagementListsModel extends DataBase
         return $success;
     }
 
-    public function getUsersAccessByList($list_id): ?array
+    public function getUsersAccessByList($list_id, $user_id): ?array
     {
-        $req = "SELECT * FROM lists_access WHERE list_id = :list_id ";
-        $stmt = $this->setDB()->prepare($req);
-        $stmt->bindValue(':list_id', $list_id, PDO::PARAM_INT);
-        $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-        return $result ?: null;
-    }
+        $req = "
+        SELECT u.id AS user_id, u.name AS user_name, la.access_level
+        FROM user u
+        INNER JOIN user_links ul ON (
+            (ul.user1_id = :user_id AND ul.user2_id = u.id)
+            OR (ul.user2_id = :user_id AND ul.user1_id = u.id)
+        )
+        AND ul.status = 'accepted'
+        INNER JOIN lists_access la ON la.user_id = u.id AND la.list_id = :list_id
+    ";
 
+    $stmt = $this->setDB()->prepare($req);
+    $stmt->bindValue(':list_id', $list_id, PDO::PARAM_INT);
+    $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+    $stmt->execute();
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
+    return $result ?: null;
+    }
 
     public function updateUserToList($author_id, $author_name,  $list_id, $user_id, $accessLevel)
     {
@@ -63,8 +73,6 @@ class ManagementListsModel extends DataBase
         $stmt->closeCursor();
         return $success;
     }
-
-
 
     public function getAccessLevel($list_id, $user_id)
     {

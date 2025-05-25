@@ -39,7 +39,7 @@ class ManagementListsController extends MainController
             exit();
         }
 
-        $usersSharingThisList = $this->managementListsModel->getUsersAccessByList($id_list);
+        $usersSharingThisList = $this->managementListsModel->getUsersAccessByList((int)$id_list, $_SESSION['user_id']);
         $usersNotSharingThisList = $this->managementListsModel->getUsersNoAccessByList((int)$id_list, $_SESSION['user_id']);
         $accessLevels = $this->accessLevelsModel->getAllAccessLevels();
 
@@ -62,10 +62,9 @@ class ManagementListsController extends MainController
         Utilities::renderPage($datas_page);
     }
 
-
-
     public function modifyListAccess(array $data): void
     {
+        // dd($data);
         if (empty($data['list_id']) || empty($data['user_id']) || empty($data['access_level'])) {
             flashMessage("Tous les champs sont obligatoires", "alert-danger");
             redirect(ROOT . "managementLists/myLists");
@@ -77,6 +76,15 @@ class ManagementListsController extends MainController
         $list_id = (int)$data['list_id'];
         $user_id = (int)$data['user_id'];
         $accessLevel = $data['access_level'];
+
+        if ($data['access_level'] == -1) {
+            // If access level is -1, we delete the user from the list
+            $this->managementListsModel->deleteUserFromList($list_id, $user_id);
+            flashMessage("L'utilisateur a été supprimé de la liste avec succès", "alert-success");
+            $datas['id_list'] = $list_id;
+            $this->managementListsPage($datas);
+            exit();
+        }
 
         $exists = $this->managementListsModel->checkIfShareExists($list_id, $user_id);
         if ($exists) {
@@ -90,22 +98,5 @@ class ManagementListsController extends MainController
         $datas['id_list'] = $list_id;
         $this->managementListsPage($datas);
         exit();
-    }
-
-    public function deleteListAccess(array $data): void
-    {
-        if (empty($data['list_id']) || empty($data['user_id'])) {
-            flashMessage("Tous les champs sont obligatoires", "alert-danger");
-            redirect(ROOT . "managementLists/myLists");
-            exit();
-        }
-
-        $list_id = (int)$data['list_id'];
-        $user_id = (int)$data['user_id'];
-
-        $this->managementListsModel->deleteUserFromList($list_id, $user_id);
-        flashMessage("L'utilisateur a été supprimé de la liste avec succès", "alert-success");
-
-        redirect(ROOT . "managementLists/myLists/$list_id");
     }
 }

@@ -16,9 +16,7 @@ switch ($path[1]) {
     case "modifyListAccess":
         $managementListsController->modifyListAccess($_POST);
         break;
-    case "deleteListAccess":
-        $managementListsController->deleteListAccess($_POST);
-        break;
+    
 
 
 

@@ -10,6 +10,9 @@ switch ($path[1]) {
     case "myLists":
         $managementListsController->managementListsPage($_POST);
         break;
+    case "shareList":
+        $managementListsController->modifyListAccess($_POST);
+        break;
     case "modifyListAccess":
         $managementListsController->modifyListAccess($_POST);
         break;

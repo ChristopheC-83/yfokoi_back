@@ -21,24 +21,19 @@ class ManagementListsModel extends DataBase
         return $count > 0; // Retourne true si un partage existe déjà, sinon false
     }
 
-    public function addUserToList($list_id, $user_id, $access_level)
+    public function addUserToList($author_id, $author_name,  $list_id, $user_id, $accessLevel)
     {
-        $permissions = AccessLevelHelper::mapLevelToPermissions($access_level);
-
-        $columns = array_keys($permissions);
-        $placeholders = array_map(fn($col) => ":$col", $columns);
-
-        $sql = "INSERT INTO lists_access (list_id, user_id, " . implode(", ", $columns) . ")
-            VALUES (:list_id, :user_id, " . implode(", ", $placeholders) . ")";
-
-        $stmt = $this->setDB()->prepare($sql);
+        $req = "INSERT INTO lists_access (list_id, user_id, access_level, author_id, author_name) 
+                VALUES (:list_id, :user_id, :access_level, :author_id, :author_name)";
+        $stmt = $this->setDB()->prepare($req);
         $stmt->bindValue(':list_id', $list_id, PDO::PARAM_INT);
         $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
-
-        foreach ($permissions as $column => $value) {
-            $stmt->bindValue(":$column", $value, PDO::PARAM_BOOL);
-        }
-        return $stmt->execute();
+        $stmt->bindValue(':access_level', $accessLevel, PDO::PARAM_INT);
+        $stmt->bindValue(':author_id', $author_id, PDO::PARAM_INT);
+        $stmt->bindValue(':author_name', $author_name, PDO::PARAM_STR);
+        $success = $stmt->execute();
+        $stmt->closeCursor();
+        return $success;
     }
 
     public function getUserAccessByList($list_id): ?array
@@ -53,27 +48,20 @@ class ManagementListsModel extends DataBase
     }
 
 
-    public function updateUserToList($list_id, $user_id, $access_level)
+    public function updateUserToList($author_id, $author_name,  $list_id, $user_id, $accessLevel)
     {
-        $permissions = AccessLevelHelper::mapLevelToPermissions($access_level);
-
-        $setParts = [];
-        foreach ($permissions as $column => $value) {
-            $setParts[] = "$column = :$column";
-        }
-
-        $sql = "UPDATE lists_access SET " . implode(", ", $setParts) . "
-            WHERE list_id = :list_id AND user_id = :user_id";
-
-        $stmt = $this->setDB()->prepare($sql);
+        $req = "UPDATE lists_access 
+              SET access_level = :access_level, author_id = :author_id, author_name = :author_name 
+              WHERE list_id = :list_id AND user_id = :user_id";
+        $stmt = $this->setDB()->prepare($req);
         $stmt->bindValue(':list_id', $list_id, PDO::PARAM_INT);
         $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
-
-        foreach ($permissions as $column => $value) {
-            $stmt->bindValue(":$column", $value, PDO::PARAM_BOOL);
-        }
-
-        return $stmt->execute();
+        $stmt->bindValue(':access_level', $accessLevel, PDO::PARAM_INT);
+        $stmt->bindValue(':author_id', $author_id, PDO::PARAM_INT);
+        $stmt->bindValue(':author_name', $author_name, PDO::PARAM_STR);
+        $success = $stmt->execute();
+        $stmt->closeCursor();
+        return $success;
     }
 
 

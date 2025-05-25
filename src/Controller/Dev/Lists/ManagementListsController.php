@@ -23,7 +23,7 @@ class ManagementListsController extends MainController
         }
 
         $allListOfUser = $this->listsModel->getAllListsByUserId($_SESSION['user_id']);
-        $id_list = htmlentities($datas['id_list']);
+        $id_list = htmlentities((string)$datas['id_list']);
         if (!is_numeric($id_list) || $id_list < 0) {
             flashMessage("L'identifiant de la liste est invalide", "alert-danger");
             redirect(ROOT . "managementLists/myLists");
@@ -41,9 +41,6 @@ class ManagementListsController extends MainController
 
         $allFriends = $this->usersLinksModel->getAcceptedFriends($_SESSION['user_id']);
         $accessLevels = $this->accessLevelsModel->getAllAccessLevels();
-       
-
-
 
         $datas_page = [
             "description" => "Bienvenue sur votre outil YFOKOI !",
@@ -61,6 +58,8 @@ class ManagementListsController extends MainController
         Utilities::renderPage($datas_page);
     }
 
+
+
     public function modifyListAccess(array $data): void
     {
         if (empty($data['list_id']) || empty($data['user_id']) || empty($data['access_level'])) {
@@ -69,21 +68,24 @@ class ManagementListsController extends MainController
             exit();
         }
 
+        $author_id = (int)$data['author_id'];
+        $author_name = htmlentities($data['author_name']);
         $list_id = (int)$data['list_id'];
         $user_id = (int)$data['user_id'];
         $accessLevel = $data['access_level'];
 
         $exists = $this->managementListsModel->checkIfShareExists($list_id, $user_id);
-        // dd($exists);
         if ($exists) {
-            $this->managementListsModel->updateUserToList($list_id, $user_id, $accessLevel);
+            $this->managementListsModel->updateUserToList($author_id, $author_name,  $list_id, $user_id, $accessLevel);
             flashMessage("Les droits de l'utilisateur ont été modifiés avec succès", "alert-success");
         } else {
-            $this->managementListsModel->addUserToList($list_id, $user_id, $accessLevel);
+            $this->managementListsModel->addUserToList($author_id, $author_name,  $list_id, $user_id, $accessLevel);
             flashMessage("L'utilisateur a été ajouté à la liste avec succès", "alert-success");
         }
 
-        redirect(ROOT . "managementLists/myLists/$list_id");
+        $datas['id_list'] = $list_id;
+        $this->managementListsPage($datas);
+        exit();
     }
 
     public function deleteListAccess(array $data): void

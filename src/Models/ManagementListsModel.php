@@ -36,7 +36,7 @@ class ManagementListsModel extends DataBase
         return $success;
     }
 
-    public function getUserAccessByList($list_id): ?array
+    public function getUsersAccessByList($list_id): ?array
     {
         $req = "SELECT * FROM lists_access WHERE list_id = :list_id ";
         $stmt = $this->setDB()->prepare($req);
@@ -83,5 +83,29 @@ class ManagementListsModel extends DataBase
         $stmt->bindValue(':list_id', $list_id, PDO::PARAM_INT);
         $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
         return $stmt->execute();
+    }
+
+    public function getUsersNoAccessByList(int $list_id, int $user_id): ?array
+    {
+        $req = "
+        SELECT u.id, u.name
+        FROM user u
+        INNER JOIN user_links ul 
+        ON (
+            (ul.user1_id = :user_id AND ul.user2_id = u.id)
+            OR (ul.user2_id = :user_id AND ul.user1_id = u.id)
+        )
+        AND ul.status = 'accepted'
+        LEFT JOIN lists_access la ON u.id = la.user_id AND la.list_id = :list_id
+        WHERE la.user_id IS NULL AND u.id != :user_id
+    ";
+
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindValue(':list_id', $list_id, PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+        return $result ?: null;
     }
 }

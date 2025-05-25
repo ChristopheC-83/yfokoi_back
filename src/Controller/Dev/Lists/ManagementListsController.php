@@ -39,8 +39,11 @@ class ManagementListsController extends MainController
             exit();
         }
 
-        $allFriends = $this->usersLinksModel->getAcceptedFriends($_SESSION['user_id']);
+        $usersSharingThisList = $this->managementListsModel->getUsersAccessByList($id_list);
+        $usersNotSharingThisList = $this->managementListsModel->getUsersNoAccessByList((int)$id_list, $_SESSION['user_id']);
         $accessLevels = $this->accessLevelsModel->getAllAccessLevels();
+
+        // dd($usersNotSharingThisList);
 
         $datas_page = [
             "description" => "Bienvenue sur votre outil YFOKOI !",
@@ -50,7 +53,8 @@ class ManagementListsController extends MainController
             "allJS" => [],
             "allListOfUser" => $allListOfUser,
             "selected_list" => $selected_list,
-            "allFriends" => $allFriends,
+            "usersSharingThisList" => $usersSharingThisList,
+            "usersNotSharingThisList" => $usersNotSharingThisList,
             "accessLevels" => $accessLevels,
 
         ];

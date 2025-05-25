@@ -17,6 +17,11 @@
 
 <hr class="my-3">
 <h2>Liste <i><?= $selected_list['name'] ?></i> partagée avec :</h2>
+<?= dump($usersSharingThisList) ?>
+
+
+
+
 <hr class="my-3">
 <h2>Nouveau partage avec :</h2>
 <form method="POST" class="w-100" action="<?= ROOT ?>managementLists/shareList">
@@ -27,7 +32,7 @@
 
         <select class="form-select w-25" name="user_id" >
             <option value="">Sélectionner un ami</option>
-            <?php foreach ($allFriends as $friend): ?>
+            <?php foreach ($usersNotSharingThisList as $friend): ?>
                 <option value="<?= $friend['id'] ?>">
                     <?= $friend['name'] ?>
                 </option>

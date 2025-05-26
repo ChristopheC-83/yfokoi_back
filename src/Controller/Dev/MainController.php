@@ -49,9 +49,9 @@ class MainController
 
         $myLists = null;
         $sharedLists = null;
-
         $items_list = [];
-        $list_name = "";
+        $list_selected = "";
+        $accessLevel = null;
         $deleteAllDoneBtn = false;
         $context = null;
 
@@ -63,6 +63,8 @@ class MainController
         }
         if (isset($context['selected_list_id']) && !empty($context['selected_list_id'])  && $context['selected_list_id'] != null) {
             $items_list = $this->listsModel->getAllItemsByListId($context['selected_list_id']);
+            $list_selected = $this->listsModel->getListById($context['selected_list_id']);
+            $accessLevel = $this->accessLevelsModel->getAccessLevelByListId($context['selected_list_id'], $_SESSION['user_id']);
         }
 
         // ✅ Vérification s'il y a des éléments cochés
@@ -85,9 +87,10 @@ class MainController
             "myLists" => $myLists,
             "sharedLists" => $sharedLists,
             "items_list" => $items_list,
-            "list_name" => $list_name,
+            "list_selected" => $list_selected,
             "deleteAllDoneBtn" => $deleteAllDoneBtn,
             "context" => $context,
+            "accessLevel" => $accessLevel,
         ];
 
         Utilities::renderPage($datas_page);

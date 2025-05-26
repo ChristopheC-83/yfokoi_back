@@ -19,4 +19,16 @@ class AccessLevels extends DataBase
         $stmt->closeCursor();
         return $result;
     }
+
+    public function getAccessLevelByListId(int $list_id, $user_id): ?array
+    {
+        $req = "SELECT * FROM lists_access WHERE list_id = :list_id AND user_id = :user_id";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindValue(':list_id', $list_id, PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+        return $result ?: null;
+    }
 }

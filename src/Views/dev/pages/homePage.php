@@ -1,5 +1,4 @@
-<!-- <?= dump($_SESSION) ?>
-<?= dump($context) ?> -->
+<?= dump($accessLevel) ?>
 
 <?php if (!empty($_SESSION['name'])) : ?>
 
@@ -17,18 +16,17 @@
                 <option value="">Sélectionner une liste perso à afficher</option>
                 <?php foreach ($myLists as $list): ?>
                     <option value="<?= $list['id'] ?>"
-                        <?= ($list['id'] == ($context['selected_list_id'] ?? null)) ? 'selected' : '' ?>><?= $list['id']." - ".$list['name'] ?>
+                        <?= ($list['id'] == ($context['selected_list_id'] ?? null)) ? 'selected' : '' ?>><?= $list['id'] . " - " . $list['name'] ?>
                     </option>
                 <?php endforeach; ?>
                 <?php foreach ($sharedLists as $list): ?>
                     <option value="<?= $list['list_id'] ?>"
                         <?= ($list['list_id'] == ($context['selected_list_id'] ?? null)) ? 'selected' : '' ?>>
-                        <?=$list['list_id']." - ". $list['name'] ?> de <?= $list['author_name'] ?>
+                        <?= $list['list_id'] . " - " . $list['name'] ?> de <?= $list['author_name'] ?>
                     </option>
                 <?php endforeach; ?>
             </select>
         </form>
-
         <?php if (isset($context['selected_list_id'])): ?>
             <div class="d-flex gap-4 align-items-center ms-4">
                 <?php if ($context['favorite_list_id'] !== $context['selected_list_id']) : ?>
@@ -41,32 +39,35 @@
                         <button class="btn btn-info ">❤️</button>
                     </form>
                 <?php endif ?>
-                <form action="<?= ROOT ?>managementLists/myLists" method="post">
-                    <input type="hidden" name="id_list" value="<?= $context['selected_list_id'] ?>">
-                    <button class="btn btn-secondary">
-                        <i class="fa-solid fa-share-nodes fa-lg"></i>
-                    </button>
-                </form>
-                <form action="<?= ROOT ?>lists/deleteList" class="" onSubmit="return confirm('On supprime cette liste ?')">
-                    <input type="hidden" name="id_list" value="<?= $context['selected_list_id'] ?>">
-                    <button class="btn btn-danger"><i class="fa-solid fa-trash-can fa-lg"></i></button>
-                </form>
+                <?php if ($_SESSION['user_id'] == $list_selected['owner_id']): ?>
+                    <form action="<?= ROOT ?>managementLists/myLists" method="post">
+                        <input type="hidden" name="id_list" value="<?= $context['selected_list_id'] ?>">
+                        <button class="btn btn-secondary">
+                            <i class="fa-solid fa-share-nodes fa-lg"></i>
+                        </button>
+                    </form>
+                    <form action="<?= ROOT ?>lists/deleteList" class="" onSubmit="return confirm('On supprime cette liste ?')">
+                        <input type="hidden" name="id_list" value="<?= $context['selected_list_id'] ?>">
+                        <button class="btn btn-danger"><i class="fa-solid fa-trash-can fa-lg"></i></button>
+                    </form>
+                <?php endif ?>
             </div>
         <?php endif ?>
     </div>
+    <?php if ($accessLevel == null || $accessLevel['access_level'] == 4  ||  $accessLevel['access_level'] == 3  || $accessLevel['access_level'] == 2): ?>
+        <form action="<?= ROOT ?>items/addItem" class="d-flex gap-3 mb-4" method="POST">
 
-    <form action="<?= ROOT ?>items/addItem" class="d-flex gap-3 mb-4" method="POST">
-
-        <?php if (isset($context['selected_list_id'])): ?>
-            <input type="hidden" name="selected_list_id" value="<?= $context['selected_list_id'] ?>">
-        <?php endif ?>
-        <input type="hidden" name="created_by" value="<?= $_SESSION['name'] ?>">
-        <input type="text" class="form-control w-75" id="content" name="content" placeholder="Ajouter à la liste" autofocus>
-        <button class="btn btn-success col-2">Ajouter</button>
-    </form>
+            <?php if (isset($context['selected_list_id'])): ?>
+                <input type="hidden" name="selected_list_id" value="<?= $context['selected_list_id'] ?>">
+            <?php endif ?>
+            <input type="hidden" name="created_by" value="<?= $_SESSION['name'] ?>">
+            <input type="text" class="form-control w-75" id="content" name="content" placeholder="Ajouter à la liste" autofocus>
+            <button class="btn btn-success col-2">Ajouter</button>
+        </form>
+    <?php endif; ?>
 
     <?php if (isset($context['selected_list_id'])): ?>
-        <h2 class="text-center text-decoration-underline mt-5">Eléments de la liste : <?= $list_name ?></h2>
+        <h2 class="text-center text-decoration-underline mt-5">Eléments de la liste : </h2>
         <!-- <?= dump($items_list) ?> -->
         <?php foreach ($items_list as $item): ?>
             <div
@@ -93,25 +94,30 @@
                         </p>
                     <?php endif; ?>
                 </div>
-                <div class="d-flex gap-3">
-                    <form action="<?= ROOT ?>items/editMode" method="POST" class="pb-2">
-                        <input type="hidden" name="id" value="<?= $item['id'] ?>">
-                        <button class="fs-3">✏️</button>
-                    </form>
-                    <form action="<?= ROOT ?>items/deleteItem" method="post" class="pb-2">
-                        <input type="hidden" name="id" value="<?= $item['id'] ?>">
-                        <button class="fs-3">🚮</button>
-                    </form>
-                </div>
+                <?php if ($accessLevel == null || ($accessLevel['access_level'] == 4  || (
+                    $accessLevel['access_level'] == 3 && $_SESSION['user_id'] == $item['created_by']))): ?>
+                    <div class="d-flex gap-3">
+                        <form action="<?= ROOT ?>items/editMode" method="POST" class="pb-2">
+                            <input type="hidden" name="id" value="<?= $item['id'] ?>">
+                            <button class="fs-3">✏️</button>
+                        </form>
+                        <form action="<?= ROOT ?>items/deleteItem" method="post" class="pb-2">
+                            <input type="hidden" name="id" value="<?= $item['id'] ?>">
+                            <button class="fs-3">🚮</button>
+                        </form>
+                    </div>
+                <?php endif; ?>
             </div>
         <?php endforeach; ?>
-        <?php if ($deleteAllDoneBtn): ?>
-            <form action="<?= ROOT ?>items/deleteAllDone" method="POST" class="d-flex justify-content-center mt-4">
-                <input type="hidden" name="id_list" value="<?= $context['selected_list_id'] ?>">
-                <button class="btn btn-info">
-                    <p class="fs-3 bold align-center mb-2">Supprimer tous les éléments cochés</p>
-                </button>
-            </form>
+        <?php if ($accessLevel == null || $accessLevel['access_level'] == 4) : ?>
+            <?php if ($deleteAllDoneBtn): ?>
+                <form action="<?= ROOT ?>items/deleteAllDone" method="POST" class="d-flex justify-content-center mt-4">
+                    <input type="hidden" name="id_list" value="<?= $context['selected_list_id'] ?>">
+                    <button class="btn btn-info">
+                        <p class="fs-3 bold align-center mb-2">Supprimer tous les éléments cochés</p>
+                    </button>
+                </form>
+            <?php endif; ?>
         <?php endif; ?>
     <?php endif ?>
 <?php else : ?>

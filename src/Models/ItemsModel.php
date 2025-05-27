@@ -59,6 +59,25 @@ class ItemsModel extends DataBase
         return $success;
     }
 
+    public function getAllItemsByListId(int $id_list): array
+    {
+        $req = "SELECT 
+            il.*, 
+            u.name AS creator_name
+        FROM 
+            items_lists il
+        LEFT JOIN 
+            user u ON il.created_by = u.id
+        WHERE 
+            il.id_list = :id_list";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindValue(':id_list', $id_list, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+        return $result;
+    }
+
     public function deleteItem(int $item_id): bool
     {
         $req = "DELETE FROM items_lists WHERE id = :id";

@@ -1,4 +1,4 @@
-<?= dump($accessLevel) ?>
+<?= dump($list_selected) ?>
 
 <?php if (!empty($_SESSION['name'])) : ?>
 
@@ -90,8 +90,13 @@
                             <button class="btn btn-warning">❌</button>
                         </form>
                     <?php else: ?>
-                        <p class="mb-2 <?= $item['is_done'] == 1 ? 'text-decoration-line-through' : '' ?>">
-                            <?= htmlspecialchars($item['content']) ?>
+                        <?php
+                        $doneClass = $item['is_done'] ? 'text-decoration-line-through' : '';
+                        $creator = $item['created_by'] !== $list_selected['owner_id'] ? " - " . htmlspecialchars($item['creator_name']) : '';
+                        ?>
+
+                        <p class="mb-2 <?= $doneClass ?>">
+                            <?= htmlspecialchars($item['content']) . $creator ?>
                         </p>
                     <?php endif; ?>
                 </div>

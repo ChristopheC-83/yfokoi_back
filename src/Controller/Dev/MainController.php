@@ -62,7 +62,7 @@ class MainController
             // dd($sharedLists);
         }
         if (isset($context['selected_list_id']) && !empty($context['selected_list_id'])  && $context['selected_list_id'] != null) {
-            $items_list = $this->listsModel->getAllItemsByListId($context['selected_list_id']);
+            $items_list = $this->itemsModel->getAllItemsByListId($context['selected_list_id']);
             $list_selected = $this->listsModel->getListById($context['selected_list_id']);
             $accessLevel = $this->accessLevelsModel->getAccessLevelByListId($context['selected_list_id'], $_SESSION['user_id']);
         }
@@ -74,9 +74,6 @@ class MainController
                 break;
             }
         }
-
-
-
 
 
         $datas_page = [

@@ -47,16 +47,7 @@ class ListsModel extends DataBase
     }
 
 
-    public function getAllItemsByListId(int $id_list): array
-    {
-        $req = "SELECT * FROM items_lists WHERE id_list = :id_list";
-        $stmt = $this->setDB()->prepare($req);
-        $stmt->bindValue(':id_list', $id_list, PDO::PARAM_INT);
-        $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-        return $result;
-    }
+    
 
     public function getListNameById(int $id_list): string
     {

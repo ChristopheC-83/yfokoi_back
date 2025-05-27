@@ -33,7 +33,7 @@ class ListsModel extends DataBase
         return $result !== false;
     }
 
-    
+
 
     public function getAllListsByUserId(int $user_id): array
     {
@@ -46,7 +46,7 @@ class ListsModel extends DataBase
         return $result;
     }
 
-    
+
     public function getAllItemsByListId(int $id_list): array
     {
         $req = "SELECT * FROM items_lists WHERE id_list = :id_list";
@@ -68,7 +68,7 @@ class ListsModel extends DataBase
         $stmt->closeCursor();
         return $result['name'] ?? '';
     }
-    public function getListById( $id_list): ?array
+    public function getListById($id_list): ?array
     {
         $req = "SELECT * FROM lists WHERE id = :id_list";
         $stmt = $this->setDB()->prepare($req);
@@ -79,16 +79,21 @@ class ListsModel extends DataBase
         return $result;
     }
 
-    
-  
-    public function deleteList(int $id_list): bool
+    public function getLastInsertedId(): int
     {
-        $req = "DELETE FROM lists WHERE id = :id";
+        return (int)$this->setDB()->lastInsertId();
+    }
+
+
+
+    public function deleteList(int $id_list, int $owner_id): bool
+    {
+        $req = "DELETE FROM lists WHERE id = :id AND owner_id = :owner_id";
         $stmt = $this->setDB()->prepare($req);
         $stmt->bindValue(':id', $id_list, PDO::PARAM_INT);
+        $stmt->bindValue(':owner_id', $owner_id, PDO::PARAM_INT);
         $success = $stmt->execute();
         $stmt->closeCursor();
-
         return $success;
     }
 }

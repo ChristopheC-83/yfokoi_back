@@ -45,6 +45,10 @@ class ListsController extends MainController
         }
 
         if ($this->listsModel->createNewList($name, $owner_id)) {
+
+            // On crée ou met à jour le contexte utilisateur avec la nouvelle liste sélectionnée
+            $list_id = $this->listsModel->getLastInsertedId();
+            $this->userContextController->createOrUpdateSelectedList($_SESSION['user_id'], $list_id);
             flashMessage("Liste créée avec succès.", "alert-success");
         } else {
             flashMessage("Erreur lors de la création de la liste.", "alert-danger");
@@ -93,7 +97,16 @@ class ListsController extends MainController
     public function deleteList($datas): void
     {
 
-        if ($this->listsModel->deleteList((int)$datas['id_list'])) {
+        // dd($datas);
+        if (!isset($datas['id_list']) || !isset($datas['owner_id'])) {
+            flashMessage("ID de la liste ou ID du propriétaire invalide.", "alert-danger");
+            header('Location: ' . ROOT . 'accueil');
+            exit;
+        }
+        //  on supprime la liste de user_context
+        $this->usersContextModel->updateSelectedList($_SESSION['user_id'], null);
+
+        if ($this->listsModel->deleteList((int)$datas['id_list'], (int)$datas['owner_id'])) {
             flashMessage("Liste supprimée avec succès.", "alert-success");
         } else {
             flashMessage("Erreur lors de la suppression de la liste.", "alert-danger");

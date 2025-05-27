@@ -46,8 +46,9 @@
                             <i class="fa-solid fa-share-nodes fa-lg"></i>
                         </button>
                     </form>
-                    <form action="<?= ROOT ?>lists/deleteList" class="" onSubmit="return confirm('On supprime cette liste ?')">
+                    <form action="<?= ROOT ?>lists/deleteList" class="" onSubmit="return confirm('On supprime cette liste ?')" method="post">
                         <input type="hidden" name="id_list" value="<?= $context['selected_list_id'] ?>">
+                        <input type="hidden" name="owner_id" value="<?= $_SESSION['user_id'] ?>">
                         <button class="btn btn-danger"><i class="fa-solid fa-trash-can fa-lg"></i></button>
                     </form>
                 <?php endif ?>

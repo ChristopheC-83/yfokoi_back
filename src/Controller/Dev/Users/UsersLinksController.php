@@ -13,7 +13,7 @@ class UsersLinksController extends MainController
 
     public function searchContact($nameSearched): array
     {
-        $searchedContact =[];
+        $searchedContact = [];
         $searchedContact = $this->usersLinksModel->searchContact($nameSearched['nameSearched']);
 
         return $searchedContact;
@@ -27,7 +27,7 @@ class UsersLinksController extends MainController
             header('Location: ' . ROOT . 'account/login');
             exit;
         }
-        
+
         $currentUserId = $_SESSION['user_id'];
         // dd( $linkedUserId);
 
@@ -47,25 +47,25 @@ class UsersLinksController extends MainController
         exit;
     }
 
-    public function askFriendRequest($id) : array { 
-        $askFriendRequest=[];
+    public function askFriendRequest($id): array
+    {
+        $askFriendRequest = [];
         $askFriendRequest = $this->usersLinksModel->getAskFriendRequest($id);
 
         return $askFriendRequest;
-        
-     }
+    }
 
-          
-     public function getAcceptedFriends($id) : array { 
-        $accepedFriends=[];
+
+    public function getAcceptedFriends($id): array
+    {
+        $accepedFriends = [];
         $accepedFriends = $this->usersLinksModel->getAcceptedFriends($id);
 
         return $accepedFriends;
-        
-     }
+    }
 
-     public function validateAskFriendRequest($data): void
-     {
+    public function validateAskFriendRequest($data): void
+    {
         $idContact = (int) $data['idContact'];
         $response = (int) $data['response'];
 
@@ -91,18 +91,18 @@ class UsersLinksController extends MainController
 
         header('Location: ' . ROOT . 'account/profile');
         exit;
-     }
+    }
 
-     public function getPendingFriends($id){
-        $pendingFriends=[];
+    public function getPendingFriends($id)
+    {
+        $pendingFriends = [];
         $pendingFriends = $this->usersLinksModel->getPendingFriends($id);
 
         return $pendingFriends;
+    }
 
-     }
-
-     public function deleteLink($data): void
-     {
+    public function deleteLink($data): void
+    {
         $idContact = (int) $data['idContact'];
 
         if (!isset($_SESSION['user_id'])) {
@@ -114,12 +114,48 @@ class UsersLinksController extends MainController
         $currentUserId = $_SESSION['user_id'];
 
         // Supprimer le lien dans la base de données
-        $this->usersLinksModel->deleteLink($currentUserId, $idContact);
+        if (!$this->usersLinksModel->deleteLink($currentUserId, $idContact)) {
+            flashMessage("Erreur lors de la suppression du contact.", "alert-danger");
+            header('Location: ' . ROOT . 'account/profile');
+            exit;
+        }
+        // supprimer favorie ou selected_list de context si liste paratgée
+        $allSharedLists = $this->sharedListsModel->getAllSharedListsUserContact($currentUserId, $idContact);
+        $selectedListFromContact = $this->usersContextModel->getSelectedListFromContact($idContact);
+        $favoriteListFromContact = $this->usersContextModel->getFavoriteListFromContact($idContact);
+
+
+
+        if (!empty($allSharedLists)) {
+            foreach ($allSharedLists as $sharedList) {
+                if ($sharedList['list_id'] === $selectedListFromContact) {
+                    // Si la liste partagée est la liste sélectionnée, on la remet à null
+                    if (!$this->usersContextModel->unsetSelectedList($idContact)) {
+                        flashMessage("Erreur lors de la mise à jour de la liste sélectionnée.", "alert-danger");
+                        header('Location: ' . ROOT . 'account/profile');
+                        exit;
+                    }
+                }
+                if ($sharedList['list_id'] === $favoriteListFromContact) {
+                    // Si la liste partagée est la liste favorite, on la remet à null
+                    if (!$this->usersContextModel->unsetFavoriteList($idContact)) {
+                        flashMessage("Erreur lors de la mise à jour de la liste favorite.", "alert-danger");
+                        header('Location: ' . ROOT . 'account/profile');
+                        exit;
+                    }
+                }
+            }
+        }
+
+        // supprimer les listes partagées avec ce contact
+        if (!$this->sharedListsModel->deleteSharedLists($currentUserId, $idContact)) {
+            flashMessage("Erreur lors de la suppression des listes partagées.", "alert-danger");
+            header('Location: ' . ROOT . 'account/profile');
+            exit;
+        }
 
         flashMessage("Contact supprimé avec succès !", "alert-success");
         header('Location: ' . ROOT . 'account/profile');
         exit;
-     }
-
-
+    }
 }

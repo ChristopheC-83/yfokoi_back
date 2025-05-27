@@ -28,4 +28,28 @@ class SharedListsModel extends DataBase
         $stmt->closeCursor();
         return $result;
     }
+
+    public function getAllSharedListsUserContact($author_id, $user_id)
+    {
+        $req = "SELECT list_id FROM lists_access 
+                WHERE author_id = :author_id AND user_id = :user_id";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindValue(':author_id', $author_id, PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+        return $result;
+    }
+
+    public function deleteSharedLists($author_id, $user_id)
+    {
+        $req = "DELETE FROM lists_access WHERE author_id = :author_id AND user_id = :user_id";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindValue(':author_id', $author_id, PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+        $success = $stmt->execute();
+        $stmt->closeCursor();
+        return $success;
+    }
 }

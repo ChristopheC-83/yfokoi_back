@@ -1,4 +1,4 @@
-<?= dump($list_selected) ?>
+<!-- <?= dump($list_selected) ?> -->
 
 <?php if (!empty($_SESSION['name'])) : ?>
 

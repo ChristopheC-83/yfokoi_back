@@ -82,6 +82,16 @@ class UsersContextModel extends DataBase
         return $success;
     }
 
+    public function unsetSelectedList($user_id): bool
+    {
+        $req = "UPDATE user_context SET selected_list_id = NULL WHERE user_id = :userId";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindParam(':userId', $user_id, PDO::PARAM_INT);
+        $success = $stmt->execute();
+        $stmt->closeCursor();
+        return $success;
+    }
+
     public function copyFavoriteToSelectedList($user_id): bool
     {
         $req = "UPDATE user_context SET selected_list_id = favorite_list_id WHERE user_id = :userId";
@@ -90,5 +100,26 @@ class UsersContextModel extends DataBase
         $success = $stmt->execute();
         $stmt->closeCursor();
         return $success;
+    }
+
+    public function getSelectedListFromContact($user_id): ?int
+    {
+        $req = "SELECT selected_list_id FROM user_context WHERE user_id = :userId";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindParam(':userId', $user_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $selectedListId = $stmt->fetchColumn();
+        $stmt->closeCursor();
+        return $selectedListId !== false ? (int)$selectedListId : null;
+    }
+    public function getFavoriteListFromContact($user_id): ?int
+    {
+        $req = "SELECT favorite_list_id FROM user_context WHERE user_id = :userId";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindParam(':userId', $user_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $favoriteListId = $stmt->fetchColumn();
+        $stmt->closeCursor();
+        return $favoriteListId !== false ? (int)$favoriteListId : null;
     }
 }

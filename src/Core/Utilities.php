@@ -59,4 +59,19 @@ class Utilities
             'type' => $type,
         ];
     }
+
+    // public static function  sendJson($data)
+    // {
+    //     header('Access-Control-Allow-Origin: *');
+    //     header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
+    //     header('Content-Type: application/json');
+    //     echo json_encode($data);
+    // }
+    // public static function  sendJson_get($data)
+    // {
+    //     header('Access-Control-Allow-Origin: *');
+    //     header('Access-Control-Allow-Methods: GET');
+    //     header('Content-Type: application/json');
+    //     echo json_encode($data);
+    // }
 }

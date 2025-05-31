@@ -2,6 +2,9 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
+use Src\Controller\Api\ApiController;
+use Src\Controller\Api\ApiListsController;
+use Src\Controller\Api\ApiUsersController;
 use Src\Controller\Dev\Items\ItemsController;
 use Src\Controller\Dev\MainController;
 use Src\Controller\Dev\Users\UsersController;
@@ -35,6 +38,9 @@ $itemsController = new ItemsController();
 $usersLinksController = new UsersLinksController();
 $usersContextController = new UsersContextController();
 $managementListsController = new ManagementListsController();
+$apiController = new ApiController();
+$apiListsController = new ApiListsController();
+$apiUsersController = new ApiUsersController();
 
 
 try {
@@ -69,6 +75,16 @@ try {
             break;
         case "managementLists":
             require_once BASE_DIR . "/routes/managementListsIndex.php";
+            break;
+
+        case "api":
+            require_once BASE_DIR . "/routes/apiUsersIndex.php";
+            break;
+        case "api_lists":
+            require_once BASE_DIR . "/routes/apiListsIndex.php";
+            break;
+        case "api_account":
+            require_once BASE_DIR . "/routes/apiAccountIndex.php";
             break;
 
         default:

@@ -83,14 +83,6 @@ class ApiUsersController extends Apicontroller
         $this->sendJson([
             "message" => "Connexion réussie",
             "token" => $jwt,
-            // "token" => $user,
-            // "user" => [
-            //     "id" => $user['id'],
-            //     "name" => $user['name'],
-            //     "email" => $user['email'],
-            //     "role" => $user['role'],
-                // Ajoutez d'autres informations utilisateur si nécessaire
-            // ]
         ]);
     } catch (\Throwable $e) {
         // log erreur dans un fichier si possible

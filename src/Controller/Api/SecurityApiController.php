@@ -29,7 +29,7 @@ class SecurityApiController
 
         // Payload (les données)
         $payload = json_encode([
-            'sub' => $user['id'],      // Identifiant de l'utilisateur
+            'id' => $user['id'],      // Identifiant de l'utilisateur
             'name' => $user['name'],   // Nom d'utilisateur
             'email' => $user['email'],   // Rôle de l'utilisateur
             'iat' => time(),           // Date d'émission du token

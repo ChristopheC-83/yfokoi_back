@@ -72,21 +72,14 @@ class ApiUsersController extends Apicontroller
             }
 
             $user = $this->usersReactModel->getUserByName($data['name']);
-            $testPassword = $this->usersReactModel->isAccountValid($data['name'], $data['password']);
-            if (!$user || !$testPassword) {
-                $this->sendJson(["message" => "Nom d'utilisateur ou mot de passe incorrect"], 401);
-                return;
-            }
-
-            $user = $this->usersReactModel->getUserByName($data['name']);
             if (!$user) {
-                $this->sendJson(["message" => "Nom d'utilisateur ou mot de passe incorrect"], 401);
+                $this->sendJson(["message" => "Nom d'utilisateur ou mot de passe incorrect."], 401);
                 return;
             }
 
             $testPassword = $this->usersReactModel->isAccountValid($data['name'], $data['password']);
             if (!$testPassword) {
-                $this->sendJson(["message" => "Nom d'utilisateur ou mot de passe incorrect"], 401);
+                $this->sendJson(["message" => "Nom d'utilisateur ou mot de passe incorrect !"], 401);
                 return;
             }
 

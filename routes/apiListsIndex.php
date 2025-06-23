@@ -6,6 +6,7 @@ if (empty($path[1])) {
 }
 
 $apiController->handleOptionsRequest();
+$apiController->setCorsHeaders();
 
 switch ($path[1]) {
 

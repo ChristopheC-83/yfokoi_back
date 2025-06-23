@@ -13,11 +13,11 @@ class UsersReactModel extends DataBase
     public function createAccountDB($name, $email, $password, $role, $created_at)
     {
 
-        $req = "INSERT INTO user (name,email, password, role, created_at) VALUES (:name,:email, :password, :role, :created_at)";
+        $req = "INSERT INTO user (name,email, hashed_password, role, created_at) VALUES (:name,:email, :hashed_password, :role, :created_at)";
         $stmt = $this->setDB()->prepare($req);
         $stmt->bindParam(":name", $name, PDO::PARAM_STR);
         $stmt->bindParam(":email", $email, PDO::PARAM_STR);
-        $stmt->bindParam(":password", $password, PDO::PARAM_STR);
+        $stmt->bindParam(":hashed_password", $password, PDO::PARAM_STR);
         $stmt->bindParam(":role", $role, PDO::PARAM_STR);
         $stmt->bindParam(":created_at", $created_at, PDO::PARAM_STR);
         $stmt->execute();
@@ -88,6 +88,7 @@ class UsersReactModel extends DataBase
         $passwordDB = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
         return password_verify($password, $passwordDB['hashed_password']);
+        // return false;
     }
 
     public function deleteAccountDB($name)

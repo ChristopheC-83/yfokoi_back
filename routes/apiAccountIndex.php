@@ -5,12 +5,13 @@ if (empty($path[1])) {
 }
 // Gérer les requêtes OPTIONS
 $apiController->handleOptionsRequest(); // Appel de la méthode de gestion des OPTIONS
+$apiController->setCorsHeaders();
 
 
 switch ($path[1]) {
-    // case "inscription":
-    //     $usersApiController->registerReact();
-    //     break;
+    case "register":
+        $apiUsersController->registerReact();
+        break;
     case "login":
         $apiUsersController->loginReact();
         break;

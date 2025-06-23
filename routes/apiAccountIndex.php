@@ -24,9 +24,9 @@ switch ($path[1]) {
     // case "modifier-profil":
     //     $usersApiController->updateProfilePage();
     //     break;
-    // case "supprimer-profil":
-    //     $usersApiController->deleteProfilePage();
-    //     break;
+    case "delete":
+        $apiUsersController->deleteAccount();
+        break;
     // default:
     // header("HTTP/1.1 404 Not Found");
     // echo json_encode(["message" => "Page non trouvée."]);

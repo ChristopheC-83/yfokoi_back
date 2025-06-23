@@ -79,7 +79,7 @@ class ApiUsersController extends Apicontroller
 
             $testPassword = $this->usersReactModel->isAccountValid($data['name'], $data['password']);
             if (!$testPassword) {
-                $this->sendJson(["message" => "Nom d'utilisateur ou mot de passe incorrect !"], 401);
+                $this->sendJson(["message" => "Nom d'utilisateur ou mot de passe incorrect."], 401);
                 return;
             }
 
@@ -92,6 +92,47 @@ class ApiUsersController extends Apicontroller
         } catch (\Throwable $e) {
             // log erreur dans un fichier si possible
             // error_log($e);
+            $this->sendJson(["message" => "Erreur serveur"], 500);
+        }
+    }
+
+    public function deleteAccount()
+    {
+        try {
+            if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
+                $this->sendJson(["message" => "Méthode non autorisée"], 405);
+                return;
+            }
+
+            // Récupération du token JWT depuis les headers
+            $headers = getallheaders(); 
+            $authHeader = $headers['Authorization'] ?? '';
+
+            if (!preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                $this->sendJson(["message" => "Token manquant ou invalide"], 401);
+                return;
+            }
+
+            $token = $matches[1];
+
+            // Décodage + vérification du token
+            $decoded = $this->securityApiController->decodeJwt($token); // ta méthode existante
+            if (!$decoded || empty($decoded['name'])) {
+                $this->sendJson(["message" => "Token invalide ou expiré"], 401);
+                return;
+            }
+
+            // Suppression de l'utilisateur connecté
+            $userName = $decoded['name'];
+            $success = $this->usersReactModel->deleteAccountDB($userName);
+
+            if (!$success) {
+                $this->sendJson(["message" => "Erreur lors de la suppression"], 500);
+                return;
+            }
+
+            $this->sendJson(["message" => "Compte supprimé avec succès"], 200);
+        } catch (\Throwable $e) {
             $this->sendJson(["message" => "Erreur serveur"], 500);
         }
     }

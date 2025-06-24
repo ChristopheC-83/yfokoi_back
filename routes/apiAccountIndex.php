@@ -15,9 +15,9 @@ switch ($path[1]) {
     case "login":
         $apiUsersController->loginReact();
         break;
-    // case "deconnexion":
-    //     $usersApiController->logoutReact();
-    //     break;
+    case "userContext":
+        $apiUserContextController->userContext();
+        break;
     // case "profil":
     //     $usersApiController->profilePage();
     //     break;

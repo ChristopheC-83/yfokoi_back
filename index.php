@@ -4,6 +4,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 use Src\Controller\Api\ApiController;
 use Src\Controller\Api\ApiListsController;
+use Src\Controller\Api\ApiUserContextController;
 use Src\Controller\Api\ApiUsersController;
 use Src\Controller\Dev\Items\ItemsController;
 use Src\Controller\Dev\MainController;
@@ -41,6 +42,7 @@ $managementListsController = new ManagementListsController();
 $apiController = new ApiController();
 $apiListsController = new ApiListsController();
 $apiUsersController = new ApiUsersController();
+$apiUserContextController = new ApiUserContextController();
 
 
 try {

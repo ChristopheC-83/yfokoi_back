@@ -100,5 +100,26 @@ class SecurityApiController
         return $payload;
     }
 
-   
+    public function getAuthenticatedUserIdFromToken(): ?int
+    {
+        $headers = getallheaders();
+        $authHeader = $headers['Authorization'] ?? '';
+
+        if (!preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            return null;
+        }
+
+        $token = $matches[1];
+
+        if (!$this->verifyJwt($token)) {
+            return null;
+        }
+
+        $decoded = $this->decodeJwt($token);
+        if (!$decoded || empty($decoded['id'])) {
+            return null;
+        }
+
+        return (int) $decoded['id'];
+    }
 }

@@ -91,11 +91,11 @@ class UsersReactModel extends DataBase
         // return false;
     }
 
-    public function deleteAccountDB($name)
+    public function deleteAccountDB($id)
     {
-        $req = "DELETE FROM user WHERE name = :name";
+        $req = "DELETE FROM user WHERE id = :id";
         $stmt = $this->setDB()->prepare($req);
-        $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         $stmt->closeCursor();
         return true;

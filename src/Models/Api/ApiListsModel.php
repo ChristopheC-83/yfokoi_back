@@ -20,4 +20,16 @@ class ApiListsModel extends DataBase
 
         return $lists;
     }
+
+    public function getOwnedListsByUserId(int $userId): array
+    {
+        $req = "SELECT * FROM lists WHERE owner_id = :owner_id";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindParam(':owner_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        $lists = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        return $lists;
+    }
 }

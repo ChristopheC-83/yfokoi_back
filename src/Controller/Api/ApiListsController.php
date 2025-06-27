@@ -16,4 +16,29 @@ class ApiListsController extends ApiController
 
         $this->sendJson($allLists);
     }
+
+    public function getOwnedLists(): void
+    {
+        try {
+            if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+                $this->sendJson(["message" => "Méthode non autorisée"], 405);
+                return;
+            }
+
+            $userId = $this->securityApiController->getAuthenticatedUserIdFromToken();
+
+
+
+            $ownedLists = $this->apiListsModel->getOwnedListsByUserId($userId);
+
+            if ($ownedLists === false) {
+                $this->sendJson(['error' => 'Erreur lors de la récupération des listes.'], 500);
+                return;
+            }
+
+            $this->sendJson($ownedLists);
+        } catch (\Throwable $e) {
+            $this->sendJson(["message" => "Erreur serveur"], 500);
+        }
+    }
 }

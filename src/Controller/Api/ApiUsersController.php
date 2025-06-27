@@ -104,27 +104,9 @@ class ApiUsersController extends Apicontroller
                 return;
             }
 
-            // Récupération du token JWT depuis les headers
-            $headers = getallheaders(); 
-            $authHeader = $headers['Authorization'] ?? '';
-
-            if (!preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                $this->sendJson(["message" => "Token manquant ou invalide"], 401);
-                return;
-            }
-
-            $token = $matches[1];
-
-            // Décodage + vérification du token
-            $decoded = $this->securityApiController->decodeJwt($token); // ta méthode existante
-            if (!$decoded || empty($decoded['name'])) {
-                $this->sendJson(["message" => "Token invalide ou expiré"], 401);
-                return;
-            }
-
-            // Suppression de l'utilisateur connecté
-            $userName = $decoded['name'];
-            $success = $this->usersReactModel->deleteAccountDB($userName);
+           
+           $userId = $this->securityApiController->getAuthenticatedUserIdFromToken();
+            $success = $this->usersReactModel->deleteAccountDB($userId);
 
             if (!$success) {
                 $this->sendJson(["message" => "Erreur lors de la suppression"], 500);

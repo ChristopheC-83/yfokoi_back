@@ -13,4 +13,7 @@ switch ($path[1]) {
     case "getAllLists":
         $apiListsController->getAllLists();
         break;
+        case "getOwnedLists":
+        $apiListsController->getOwnedLists();
+        break;
 }

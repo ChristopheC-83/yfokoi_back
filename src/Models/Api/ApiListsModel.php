@@ -36,22 +36,22 @@ class ApiListsModel extends DataBase
     public function getAccessListsByUserId(int $userId): array
     {
         $req = " SELECT
-    l.id,
-    l.name,
-    l.owner_id,
-    l.created_at,
-    l.updated_at,
-    l.is_archived,
-    al.id AS access_id,
-    al.user_id,
-    al.list_id,
-    al.access_level,
-    u.id AS author_id,
-    u.name AS author_name
-  FROM lists_access al -- ← ce nom là !
-  JOIN lists l ON al.list_id = l.id
-  JOIN user u ON l.owner_id = u.id
-  WHERE al.user_id = :user_id";
+                l.id,
+                l.name,
+                l.owner_id,
+                l.created_at,
+                l.updated_at,
+                l.is_archived,
+                al.id AS access_id,
+                al.user_id,
+                al.list_id,
+                al.access_level,
+                u.id AS author_id,
+                u.name AS author_name
+            FROM lists_access al 
+            JOIN lists l ON al.list_id = l.id
+            JOIN user u ON l.owner_id = u.id
+            WHERE al.user_id = :user_id";
         $stmt = $this->setDB()->prepare($req);
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();

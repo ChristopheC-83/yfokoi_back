@@ -26,9 +26,11 @@ class ApiUserContextController extends Apicontroller
                 $this->sendJson(["message" => "Contexte utilisateur non trouvé"], 404);
                 return;
             }
-            $this->sendJson([
-                "userContext" => $userContext
-            ], 200);
+            // $this->sendJson([
+            //     "userContext" => $userContext
+            // ], 200);
+            $this->sendJson($userContext, 200);
+
         } catch (\Throwable $e) {
             $this->sendJson(["message" => "Erreur serveur"], 500);
         }

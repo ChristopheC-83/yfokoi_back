@@ -41,4 +41,28 @@ class ApiListsController extends ApiController
             $this->sendJson(["message" => "Erreur serveur"], 500);
         }
     }
+
+    public function getAccessLists(): void
+    {
+        try {
+            if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+                $this->sendJson(["message" => "Méthode non autorisée"], 405);
+                return;
+            }
+
+            $userId = $this->securityApiController->getAuthenticatedUserIdFromToken();
+
+            // Assuming you have a method to get access lists by user ID
+            $accessLists = $this->apiListsModel->getAccessListsByUserId($userId);
+
+            if ($accessLists === false) {
+                $this->sendJson(['error' => 'Erreur lors de la récupération des listes accessibles.'], 500);
+                return;
+            }
+
+            $this->sendJson($accessLists);
+        } catch (\Throwable $e) {
+            $this->sendJson(["message" => "Erreur serveur"], 500);
+        }
+    }
 }

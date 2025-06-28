@@ -16,4 +16,11 @@ switch ($path[1]) {
         case "getOwnedLists":
         $apiListsController->getOwnedLists();
         break;
+        case "getAccessLists" :
+        $apiListsController->getAccessLists();
+        break;
+    default:
+        $apiController->sendJson(["message" => "Page non trouvée."], 404);
+        break;
+        
 }

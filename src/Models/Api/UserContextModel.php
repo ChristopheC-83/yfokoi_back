@@ -20,4 +20,6 @@ class UsersReactModel extends DataBase
         $stmt->closeCursor();
         return $userContext ?: null;
     }
+
+    
 }

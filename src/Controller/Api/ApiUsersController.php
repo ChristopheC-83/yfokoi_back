@@ -83,6 +83,13 @@ class ApiUsersController extends Apicontroller
                 return;
             }
 
+            //  copier favoriteListId sur selectedListId
+            if($user['id']){
+                $this->usersContextModel->copyFavoriteToSelectedList($user['id']);
+            }
+
+
+
             $jwt = $this->securityApiController->generateJwt($user);
 
             $this->sendJson([

@@ -18,6 +18,14 @@ switch ($path[1]) {
     case "userContext":
         $apiUserContextController->userContext();
         break;
+
+    case "updateSelectedListId":
+        $apiUserContextController->updateSelectedListId();
+        break;
+
+    case "updateFavoriteListId":
+        $apiUserContextController->updateFavoriteListId();
+        break;
     // case "profil":
     //     $usersApiController->profilePage();
     //     break;

@@ -65,4 +65,45 @@ class ApiListsController extends ApiController
             $this->sendJson(["message" => "Erreur serveur"], 500);
         }
     }
+    public function createNewList(): void
+    {
+        try {
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                $this->sendJson(["message" => "Méthode non autorisée"], 405);
+                return;
+            }
+
+            $userId = $this->securityApiController->getAuthenticatedUserIdFromToken();
+
+            $data = json_decode(file_get_contents("php://input"), true);
+
+            $name = trim($data['name']);
+
+            if (!$name || !is_string($name)) {
+                $this->sendJson(["message" => "Nom de la liste invalide"], 400);
+                return;
+            }
+
+            if ($this->apiListsModel->isListNameExists($name, $userId)) {
+                $this->sendJson(["message" => "Vous avez déjà une liste avec ce nom."], 400);
+                return;
+            }
+
+            $listId = $this->apiListsModel->createNewList($name, $userId);
+
+            if (!$listId) {
+                $this->sendJson(["message" => "Erreur lors de la création de la liste."], 500);
+                return;
+            }
+
+            $newList = $this->apiListsModel->getListById($listId);
+
+            $this->sendJson([
+                "message" => "Liste créée avec succès.",
+                "newList" => $newList
+            ], 201);
+        } catch (\Throwable $e) {
+            $this->sendJson(["message" => "Erreur serveur"], 500);
+        }
+    }
 }

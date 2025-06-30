@@ -60,4 +60,44 @@ class ApiListsModel extends DataBase
 
         return $lists;
     }
+
+    public function isListNameExists(string $name, int $owner_id): bool
+    {
+        $req = "SELECT id FROM lists WHERE name = :name AND owner_id = :owner_id";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindValue(':name', $name, PDO::PARAM_STR);
+        $stmt->bindValue(':owner_id', $owner_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch();
+        $stmt->closeCursor();
+
+        return $result !== false;
+    }
+
+    public function createNewList($name, $owner_id): int|false
+    {
+        $req = "INSERT INTO lists (name, owner_id) VALUES (:name, :owner_id)";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindValue(':name', $name, PDO::PARAM_STR);
+        $stmt->bindValue(':owner_id', $owner_id, PDO::PARAM_INT);
+        if ($stmt->execute()) {
+        $lastId = $this->setDB()->lastInsertId(); // ou $stmt->lastInsertId() si dispo, selon PDO
+        $stmt->closeCursor();
+        return (int) $lastId;
+    }
+
+    $stmt->closeCursor();
+    return false;
+    }
+    public function getListById(int $id): ?array
+    {
+        $req = "SELECT * FROM lists WHERE id = :id";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        return $result ;
+    }
 }

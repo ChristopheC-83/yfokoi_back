@@ -19,6 +19,9 @@ switch ($path[1]) {
         case "getAccessLists" :
         $apiListsController->getAccessLists();
         break;
+        case "createNewList" :
+        $apiListsController->createNewList();
+        break;
     default:
         $apiController->sendJson(["message" => "Page non trouvée."], 404);
         break;

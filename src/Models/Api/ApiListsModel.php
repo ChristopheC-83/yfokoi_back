@@ -100,4 +100,15 @@ class ApiListsModel extends DataBase
 
         return $result ;
     }
+
+    public function deleteList(int $id_list, int $owner_id): bool
+    {
+        $req = "DELETE FROM lists WHERE id = :id_list AND owner_id = :owner_id";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindValue(':id_list', $id_list, PDO::PARAM_INT);
+        $stmt->bindValue(':owner_id', $owner_id, PDO::PARAM_INT);
+        $success = $stmt->execute();
+        $stmt->closeCursor();
+        return $success;
+    }
 }

@@ -22,6 +22,9 @@ switch ($path[1]) {
         case "createNewList" :
         $apiListsController->createNewList();
         break;
+        case "deleteList" :
+        $apiListsController->deleteList();
+        break;
     default:
         $apiController->sendJson(["message" => "Page non trouvée."], 404);
         break;

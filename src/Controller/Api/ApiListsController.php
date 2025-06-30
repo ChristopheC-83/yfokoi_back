@@ -106,4 +106,54 @@ class ApiListsController extends ApiController
             $this->sendJson(["message" => "Erreur serveur"], 500);
         }
     }
+    public function deleteList(): void
+    {
+        try {
+            if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
+                $this->sendJson(["message" => "Méthode non autorisée"], 405);
+                return;
+            }
+
+            $userId = $this->securityApiController->getAuthenticatedUserIdFromToken();
+
+            $data = json_decode(file_get_contents("php://input"), true);
+
+            $id = $data['id'];
+
+            if (!$id || !is_numeric($id)) {
+                $this->sendJson(["message" => "Nom de la liste invalide"], 400);
+                return;
+            }
+
+            $list = $this->apiListsModel->getListById($id);
+
+            if($list['owner_id'] !== $userId) {
+                $this->sendJson(["message" => "Vous n'avez pas les droits pour supprimer cette liste."], 403);
+                return;
+            }
+
+            $userContext = $this->usersContextModel->getUserContextById($userId);
+
+            if($userContext['selected_list_id'] === $id) {
+                $this->usersContextModel->unsetSelectedList($userId);
+            }
+            if($userContext['favorite_list_id'] === $id) {
+                $this->usersContextModel->unsetFavoriteList($userId);
+            }
+
+
+            $success = $this->apiListsModel->deleteList($id, $userId);
+
+            if (!$success) {
+                $this->sendJson(["message" => "Erreur lors de la suppression de la liste."], 500);
+                return;
+            }
+
+            $this->sendJson(["message" => "Liste supprimée avec succès."], 200);
+
+           
+        } catch (\Throwable $e) {
+            $this->sendJson(["message" => "Erreur serveur"], 500);
+        }
+    }
 }

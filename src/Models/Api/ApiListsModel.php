@@ -97,7 +97,6 @@ class ApiListsModel extends DataBase
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
-
         return $result ;
     }
 
@@ -107,6 +106,17 @@ class ApiListsModel extends DataBase
         $stmt = $this->setDB()->prepare($req);
         $stmt->bindValue(':id_list', $id_list, PDO::PARAM_INT);
         $stmt->bindValue(':owner_id', $owner_id, PDO::PARAM_INT);
+        $success = $stmt->execute();
+        $stmt->closeCursor();
+        return $success;
+    }
+
+    public function modifyNameList(int $id, string $name): bool
+    {
+        $req = "UPDATE lists SET name = :name WHERE id = :id";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindValue(':name', $name, PDO::PARAM_STR);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $success = $stmt->execute();
         $stmt->closeCursor();
         return $success;

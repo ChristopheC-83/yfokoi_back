@@ -13,20 +13,22 @@ switch ($path[1]) {
     case "getAllLists":
         $apiListsController->getAllLists();
         break;
-        case "getOwnedLists":
+    case "getOwnedLists":
         $apiListsController->getOwnedLists();
         break;
-        case "getAccessLists" :
+    case "getAccessLists":
         $apiListsController->getAccessLists();
         break;
-        case "createNewList" :
+    case "createNewList":
         $apiListsController->createNewList();
         break;
-        case "deleteList" :
+    case "modifyNameList":
+        $apiListsController->modifyNameList();
+        break;
+    case "deleteList":
         $apiListsController->deleteList();
         break;
     default:
         $apiController->sendJson(["message" => "Page non trouvée."], 404);
         break;
-        
 }

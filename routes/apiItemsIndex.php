@@ -4,6 +4,10 @@ if(empty($path[1])) {
     $path[1] = "api_items";
 }
 
+
+$apiController->handleOptionsRequest();
+$apiController->setCorsHeaders();
+
 switch ($path[1]) {
 
     case "getAllMyItems":

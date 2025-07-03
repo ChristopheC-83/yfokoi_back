@@ -10,6 +10,7 @@ use Src\Controller\Dev\MainController;
 use Src\Models\Api\UsersReactModel;
 use Src\Models\Api\ApiListsModel;
 use Src\Controller\Api\SecurityApiController;
+use Src\Models\api\ApiItemsModel;
 
 class ApiController extends MainController
 {
@@ -17,12 +18,15 @@ class ApiController extends MainController
     public $securityApiController;
     public $apiListsModel;
     
+    public $apiItemsModel;
+    
     public function __construct()
     {
         parent::__construct();
         $this->usersReactModel = new UsersReactModel();
         $this->securityApiController = new SecurityApiController();
         $this->apiListsModel = new ApiListsModel();
+        $this->apiItemsModel = new ApiItemsModel();
     }
 
     // Centraliser l'envoi des headers CORS

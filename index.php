@@ -3,6 +3,7 @@
 require_once __DIR__ . '/vendor/autoload.php';
 
 use Src\Controller\Api\ApiController;
+use Src\Controller\Api\ApiItemsController;
 use Src\Controller\Api\ApiListsController;
 use Src\Controller\Api\ApiUserContextController;
 use Src\Controller\Api\ApiUsersController;
@@ -30,8 +31,6 @@ define("ROOT", str_replace("index.php", "", (isset($_SERVER['HTTPS']) ? "https" 
 
 
 
-
-
 $mainController = new MainController();
 $usersController = new UsersController();
 $listsController = new ListsController();
@@ -43,6 +42,7 @@ $apiController = new ApiController();
 $apiListsController = new ApiListsController();
 $apiUsersController = new ApiUsersController();
 $apiUserContextController = new ApiUserContextController();
+$apiItemsController = new ApiItemsController(); 
 
 
 try {

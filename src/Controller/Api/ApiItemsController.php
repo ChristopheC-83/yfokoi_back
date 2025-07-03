@@ -4,23 +4,10 @@ declare(strict_types=1);
 
 namespace Src\Controller\Api;
 
-use Src\Controller\Dev\MainController;
-use Src\Models\Api\ApiItemsModel;
-use Src\Models\Api\UsersReactModel;
-use Src\Controller\Api\SecurityApiController;
-use Src\Models\api\ApiListsModel;
 
 class ApiItemsController extends ApiController
 {
-    public $apiItemsModel;
-    public $apiListsModel;
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->apiItemsModel = new ApiItemsModel();
-        $this->apiListsModel = new ApiListsModel();
-    }
+   
 
     public function getAllMyItems(): void
     {
@@ -43,16 +30,16 @@ class ApiItemsController extends ApiController
             }
             $allLists = array_values($listsById);
 
+           
             if (empty($allLists)) {
                 $this->sendJson(["message" => "Aucune liste trouvée."], 404);
                 return;
             }
-
             foreach ($allLists as $list) {
                 $items = $this->apiItemsModel->getItemsByListId($list['id']);
 
                 $result[] = [
-                    'list' => $list,
+                    'list_id' => $list['id'],
                     'items' => $items,
                 ];
             }

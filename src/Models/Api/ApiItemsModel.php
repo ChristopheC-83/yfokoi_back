@@ -11,9 +11,9 @@ class ApiItemsModel extends DataBase
 {
     public function getItemsByListId(int $listId): array
     {
-        $req = "SELECT * FROM items WHERE list_id = :list_id";
+        $req = "SELECT * FROM items_lists WHERE id_list = :id_list";
         $stmt = $this->setDB()->prepare($req);
-        $stmt->bindParam(':list_id', $listId, PDO::PARAM_INT);
+        $stmt->bindParam(':id_list', $listId, PDO::PARAM_INT);
         $stmt->execute();
         $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();

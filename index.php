@@ -50,7 +50,6 @@ try {
         $path[0] = "accueil";
     } else {
         $path = explode("/", filter_var($_GET['page'], FILTER_SANITIZE_URL));
-      
     }
 
 
@@ -87,6 +86,9 @@ try {
             break;
         case "api_account":
             require_once BASE_DIR . "/routes/apiAccountIndex.php";
+            break;
+        case "api_items":
+            require_once BASE_DIR . "/routes/apiItemsIndex.php";
             break;
 
         default:

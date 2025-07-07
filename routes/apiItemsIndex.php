@@ -13,9 +13,10 @@ switch ($path[1]) {
     case "getAllMyItems":
         $apiItemsController->getAllMyItems();
         break;
-    // case "getItemsByListId":
-    //     $apiItemsController->getItemsByListId();
-    //     break;
+
+    case "getItemsByList":
+        $apiItemsController->getItemsByListId();
+        break;
     // case "addItem":
     //     $apiItemsController->addItem();
     //     break;

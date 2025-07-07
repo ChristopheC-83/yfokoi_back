@@ -12,7 +12,7 @@ class ApiItemsModel extends DataBase
     public function getItemsByListId(int $listId): array
     {
         // $req = "SELECT * FROM items_lists WHERE id_list = :id_list";
-         $req = "
+        $req = "
         SELECT 
             i.id,
             i.id_list,
@@ -32,7 +32,41 @@ class ApiItemsModel extends DataBase
         $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
         return $items;
-
     }
 
+    public function getListIdByItemId(int $itemId): ?int
+    {
+        $req = "SELECT id_list FROM items_lists WHERE id = :id";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindParam(':id', $itemId, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        return $result ? (int) $result['id_list'] : null;
+    }
+
+    public function updateIsDone(int $itemId, int $isDone): bool
+    {
+        $req = "UPDATE items_lists SET is_done = :is_done WHERE id = :id";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindValue(':is_done', $isDone, PDO::PARAM_INT);
+        $stmt->bindValue(':id', $itemId, PDO::PARAM_INT);
+        $success = $stmt->execute();
+        $stmt->closeCursor();
+
+        return $success;
+    }
+
+    public function getItemsById(int $id): ?array
+    {
+        $req = "SELECT * FROM items_lists WHERE id = :id";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $item = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        return $item ?: null;
+    }
 }

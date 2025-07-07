@@ -17,6 +17,9 @@ switch ($path[1]) {
     case "getItemsByList":
         $apiItemsController->getItemsByListId();
         break;
+    case "updateIsDone":
+        $apiItemsController->updateIsDone();
+        break;
     // case "addItem":
     //     $apiItemsController->addItem();
     //     break;

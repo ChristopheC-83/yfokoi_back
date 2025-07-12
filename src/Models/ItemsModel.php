@@ -100,4 +100,18 @@ class ItemsModel extends DataBase
 
         return $success;
     }
+
+    public function getItemsById(int $id_item): ?array
+    {
+        $req = "SELECT * FROM items_lists WHERE id = :id";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindParam(':id', $id_item, PDO::PARAM_INT);
+        $stmt->execute();
+        $item = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        return $item ?: null;
+    }
+
+    
 }

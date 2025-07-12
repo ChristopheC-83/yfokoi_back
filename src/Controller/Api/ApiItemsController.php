@@ -156,13 +156,13 @@ class ApiItemsController extends ApiController
             $content = htmlspecialchars($data['content']);
             $created_by = $data['created_by'];
 
-            error_log("Demande d'acces à l id_list: " . $id_list.
+            error_log("Demande d'acces à l id_list: " . $id_list .
                 " content: " . $content .
                 " created_by: " . $created_by);
             // si access list, ai je le bon niveau d'accréditation ?
-            $accessListCheck = $this->apiListsModel->checkListAccessCreate($id_list, $created_by);
+            $accessListCheck = $this->apiListsModel->checkListAccessCreate($id_list, $userId);
             // suis je propriétaire de la liste ?
-            $ownershipCheck = $this->apiListsModel->checkListOwnership($id_list, $created_by);
+            $ownershipCheck = $this->apiListsModel->checkListOwnership($id_list, $userId);
 
             // Log the ownership and access checks
             error_log("Access: " . ($accessListCheck ? 'true' : 'false'));
@@ -200,6 +200,60 @@ class ApiItemsController extends ApiController
             // error_log("Création de l'item : " . json_encode($data));
 
             $this->sendJson(["message" => "Erreur serveur"], 500);
+            return;
+        }
+    }
+
+    public function deleteItem(): void
+    {
+        try {
+            if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
+                $this->sendJson(["message" => "Méthode non autorisée"], 405);
+                return;
+            }
+
+            $userId = $this->securityApiController->getAuthenticatedUserIdFromToken();
+            $data = json_decode(file_get_contents("php://input"), true);
+            $id = $data['id'];
+
+            // error_log("Suppression de l'item : " . json_encode($data));
+            if (!$userId) {
+                $this->sendJson(["message" => "Utilisateur non authentifié."], 401);
+                return;
+            }
+
+            if (!isset($id) || empty($id)) {
+                $this->sendJson(["message" => "ID de l'item manquant."], 400);
+                return;
+            }
+
+            $id_list = $this->apiItemsModel->getItemsById($id)['id_list'];
+            $created_by = $this->apiItemsModel->getItemsById($id)['created_by'];
+
+            // si access list, ai je le bon niveau d'accréditation ?
+            $checkListAccessOwn = $this->apiListsModel->checkListAccessOwn($id_list, $userId);
+            $checkListAccessAll = $this->apiListsModel->checkListAccessAll($id_list, $userId);
+            // suis je propriétaire de la liste ?
+            $ownershipCheck = $this->apiListsModel->checkListOwnership($id_list, $userId);
+
+            $hasRights =
+                $ownershipCheck
+                || $checkListAccessAll
+                || ($checkListAccessOwn && $created_by === $userId);
+
+            if (!$hasRights) {
+                // error_log("Pas les droits de sup ". $id_list."/".$created_by."/".$userId);
+                $this->sendJson(["message" => "Accès refusé à la liste."], 403);
+                return;
+            }
+            
+                error_log("Les droits de sup ". $id_list."/".$created_by."/".$userId);
+            if ($this->apiItemsModel->deleteItemFromDB($id)) {
+                $this->sendJson(["message" => "Item supprimé avec succès."], 200);
+                return;
+            }
+        } catch (\Throwable $e) {
+            $this->sendJson(["message" => "Erreur lors de la suppression de l'item."], 500);
             return;
         }
     }

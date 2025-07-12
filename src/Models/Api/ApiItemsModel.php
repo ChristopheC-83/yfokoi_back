@@ -95,4 +95,14 @@ class ApiItemsModel extends DataBase
         $stmt->closeCursor();
         return $success;
     }
+
+    public function deleteItemFromDB(int $id): bool
+    {
+        $req = "DELETE FROM items_lists WHERE id = :id";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $stmt->closeCursor();
+        return true; 
+    }
 }

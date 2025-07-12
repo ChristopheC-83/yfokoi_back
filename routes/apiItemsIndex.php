@@ -23,6 +23,9 @@ switch ($path[1]) {
     case "addNewItem":
         $apiItemsController->addNewItem();
         break;
+    case "deleteItem":
+        $apiItemsController->deleteItem();
+        break;
 
 
     // case "addItem":

@@ -20,6 +20,11 @@ switch ($path[1]) {
     case "updateIsDone":
         $apiItemsController->updateIsDone();
         break;
+    case "addNewItem":
+        $apiItemsController->addNewItem();
+        break;
+
+
     // case "addItem":
     //     $apiItemsController->addItem();
     //     break;

@@ -133,4 +133,74 @@ class ApiItemsController extends ApiController
             $this->sendJson(["message" => "Erreur serveur sur accessListCheck:" . $accessListCheck], 500);
         }
     }
+
+    public function addNewItem(): void
+    {
+        try {
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                $this->sendJson(["message" => "Méthode non autorisée"], 405);
+                return;
+            }
+
+            $userId = $this->securityApiController->getAuthenticatedUserIdFromToken();
+
+            $data = json_decode(file_get_contents("php://input"), true);
+            // $json = file_get_contents('php://input');
+            // error_log("Corps brut reçu : " . $json);
+
+            // $data = json_decode($json, true);
+            // error_log("Données décodées : " . json_encode($data));
+
+            // $newItem = $data['item'];
+            $id_list = $data['id_list'];
+            $content = htmlspecialchars($data['content']);
+            $created_by = $data['created_by'];
+
+            error_log("Demande d'acces à l id_list: " . $id_list.
+                " content: " . $content .
+                " created_by: " . $created_by);
+            // si access list, ai je le bon niveau d'accréditation ?
+            $accessListCheck = $this->apiListsModel->checkListAccessCreate($id_list, $created_by);
+            // suis je propriétaire de la liste ?
+            $ownershipCheck = $this->apiListsModel->checkListOwnership($id_list, $created_by);
+
+            // Log the ownership and access checks
+            error_log("Access: " . ($accessListCheck ? 'true' : 'false'));
+            error_log("Ownership: " . ($ownershipCheck ? 'true' : 'false'));
+
+            if (!$ownershipCheck && !$accessListCheck) {
+                $this->sendJson(["message" => "Accès refusé à la liste."], 403);
+                return;
+            }
+
+            //  content de l'item non vide
+            if (empty($data['content']) || !is_string($data['content'])) {
+                $this->sendJson(["message" => "Nom de l'item invalide."], 400);
+                return;
+            }
+
+            //  existe dejà dans la liste ?
+            $isExisting = $this->apiItemsModel->ItemExists($id_list, $content, $created_by);
+            if ($isExisting) {
+                $this->sendJson(["message" => "L'item existe déjà dans cette liste."], 400);
+                return;
+            }
+
+            $itemId = $this->apiItemsModel->createNewItem($id_list, $content, $created_by);
+
+            if (!$itemId) {
+                $this->sendJson(["message" => "Erreur lors de la création de l'item."], 500);
+                return;
+            }
+
+            $this->sendJson([
+                "message" => "Item créé avec succès.",
+            ], 201);
+        } catch (\Throwable $e) {
+            // error_log("Création de l'item : " . json_encode($data));
+
+            $this->sendJson(["message" => "Erreur serveur"], 500);
+            return;
+        }
+    }
 }

@@ -147,4 +147,16 @@ class ApiListsModel extends DataBase
         
         return (bool)$count;
     }
+    public function checkListAccessCreate(int $list_id, int $user_id): bool
+    {
+        $req = "SELECT COUNT(*) FROM lists_access WHERE list_id = :list_id AND user_id = :user_id AND access_level > 1";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindParam(':list_id', $list_id, PDO::PARAM_INT);
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $count = $stmt->fetchColumn();
+        $stmt->closeCursor();
+        
+        return (bool)$count;
+    }
 }

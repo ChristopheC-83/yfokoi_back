@@ -69,4 +69,30 @@ class ApiItemsModel extends DataBase
 
         return $item ?: null;
     }
+
+    public function ItemExists($id_list, $content, $created_by)
+    {
+        $req = "SELECT id FROM items_lists WHERE id_list = :id_list AND content = :content AND created_by = :created_by";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindValue(':id_list', $id_list, PDO::PARAM_INT);
+        $stmt->bindValue(':content', $content, PDO::PARAM_STR);
+        $stmt->bindValue(':created_by', $created_by, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch();
+        $stmt->closeCursor();
+
+        return $result !== false;
+    }
+
+    public function createNewItem($id_list, $content, $created_by)
+    {
+        $req = "INSERT INTO items_lists (id_list, content, created_by) VALUES (:id_list, :content, :created_by)";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindValue(':id_list', $id_list, PDO::PARAM_INT);
+        $stmt->bindValue(':content', $content, PDO::PARAM_STR);
+        $stmt->bindValue(':created_by', $created_by, PDO::PARAM_INT);
+        $success = $stmt->execute();
+        $stmt->closeCursor();
+        return $success;
+    }
 }

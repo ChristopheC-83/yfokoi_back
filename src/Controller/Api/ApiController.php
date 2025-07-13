@@ -44,6 +44,7 @@ class ApiController extends MainController
         $this->setCorsHeaders();
         http_response_code($statusCode);
         echo json_encode($data);
+        exit;
     }
 
     // Gérer les requêtes OPTIONS (CORS)

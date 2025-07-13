@@ -246,8 +246,8 @@ class ApiItemsController extends ApiController
                 $this->sendJson(["message" => "Accès refusé à la liste."], 403);
                 return;
             }
-            
-                error_log("Les droits de sup ". $id_list."/".$created_by."/".$userId);
+
+            error_log("Les droits de sup " . $id_list . "/" . $created_by . "/" . $userId);
             if ($this->apiItemsModel->deleteItemFromDB($id)) {
                 $this->sendJson(["message" => "Item supprimé avec succès."], 200);
                 return;
@@ -255,6 +255,71 @@ class ApiItemsController extends ApiController
         } catch (\Throwable $e) {
             $this->sendJson(["message" => "Erreur lors de la suppression de l'item."], 500);
             return;
+        }
+    }
+
+    public function deleteCheckedItems(): void
+    {
+        try {
+            if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
+                $this->sendJson(["message" => "Méthode non autorisée"], 405);
+                return;
+            }
+
+            $userId = $this->securityApiController->getAuthenticatedUserIdFromToken();
+            $data = json_decode(file_get_contents("php://input"), true);
+            $id_list = $data['id_list'];
+
+            if (!is_array($data) || !isset($data['id_list'])) {
+                $this->sendJson(["message" => "ID de la liste manquant ou payload invalide."], 400);
+                return;
+            }
+
+            if (!isset($id_list) || empty($id_list)) {
+                $this->sendJson(["message" => "ID de la liste manquant."], 400);
+                return;
+            }
+
+            // si access list, ai je le bon niveau d'accréditation ?
+            $checkListAccessOwn = $this->apiListsModel->checkListAccessOwn($id_list, $userId);
+            $checkListAccessAll = $this->apiListsModel->checkListAccessAll($id_list, $userId);
+            // suis je propriétaire de la liste ?
+            $ownershipCheck = $this->apiListsModel->checkListOwnership($id_list, $userId);
+
+            $hasAllRights =
+                $ownershipCheck
+                || $checkListAccessAll;
+
+            $hasRightsOnOwn = $checkListAccessOwn;
+
+            if (!$hasAllRights && !$hasRightsOnOwn) {
+                $this->sendJson(["message" => "Accès refusé à la liste."], 403);
+                return;
+            }
+            $deletedCount = 0;
+
+            if ($hasAllRights) {
+                $deletedCount = $this->apiItemsModel->deleteAllCheckedItemsFromDB($id_list);
+            } elseif ($hasRightsOnOwn) {
+                $deletedCount = $this->apiItemsModel->deleteMyCheckedItemsFromDB($id_list, $userId);
+            }
+
+            if ($deletedCount > 0) {
+                $this->sendJson([
+                    "message" => "$deletedCount item(s) cochés supprimé(s).",
+                    "deletedCount" => $deletedCount
+                ], 200);
+            } else {
+                $this->sendJson([
+                    "message" => "Aucun item supprimé (aucun à supprimer ou erreur serveur).",
+                    "deletedCount" => 0
+                ], 200);
+            }
+
+            $this->sendJson(["message" => "Items supprimés avec succès."], 200);
+        } catch (\Throwable $e) {
+            error_log("Erreur deleteCheckedItems : " . $e->getMessage());
+            $this->sendJson(["message" => "Erreur serveur"], 500);
         }
     }
 }

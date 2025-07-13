@@ -96,13 +96,54 @@ class ApiItemsModel extends DataBase
         return $success;
     }
 
-    public function deleteItemFromDB(int $id): bool
+    public function deleteItemFromDB(int $id_list): bool
     {
-        $req = "DELETE FROM items_lists WHERE id = :id";
+        $req = "DELETE FROM items_lists WHERE id_list = :id_list";
         $stmt = $this->setDB()->prepare($req);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':id_list', $id_list, PDO::PARAM_INT);
         $stmt->execute();
         $stmt->closeCursor();
         return true; 
     }
+
+    public function deleteAllCheckedItemsFromDB(int $id_list): int
+{
+    try {
+        $req = "DELETE FROM items_lists WHERE id_list = :id_list AND is_done = 1";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindParam(':id_list', $id_list, PDO::PARAM_INT);
+        $stmt->execute();
+        $deletedCount = $stmt->rowCount();
+        $stmt->closeCursor();
+        return $deletedCount;
+    } catch (\PDOException $e) {
+        error_log("Erreur SQL deleteAllCheckedItemsFromDB : " . $e->getMessage());
+        return 0; // Aucun item supprimé
+    }
+}
+
+
+    public function deleteMyCheckedItemsFromDB(int $id_list, int $created_by): int
+{
+    try {
+        $req = "DELETE FROM items_lists 
+                WHERE id_list = :id_list 
+                  AND created_by = :created_by 
+                  AND is_done = 1";
+
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindParam(':id_list', $id_list, PDO::PARAM_INT);
+        $stmt->bindParam(':created_by', $created_by, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $deletedCount = $stmt->rowCount();
+        $stmt->closeCursor();
+
+        return $deletedCount;
+    } catch (\PDOException $e) {
+        error_log("Erreur SQL deleteMyCheckedItemsFromDB : " . $e->getMessage());
+        return 0; // 0 supprimé => soit rien à supprimer, soit erreur
+    }
+}
+
 }

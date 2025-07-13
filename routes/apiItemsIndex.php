@@ -26,6 +26,9 @@ switch ($path[1]) {
     case "deleteItem":
         $apiItemsController->deleteItem();
         break;
+    case "deleteCheckedItems":
+        $apiItemsController->deleteCheckedItems();
+        break;
 
 
     // case "addItem":

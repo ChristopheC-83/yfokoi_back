@@ -58,7 +58,7 @@ class ApiItemsModel extends DataBase
         return $success;
     }
 
-    public function getItemsById(int $id): ?array
+    public function getItemById(int $id): ?array
     {
         $req = "SELECT * FROM items_lists WHERE id = :id";
         $stmt = $this->setDB()->prepare($req);
@@ -70,13 +70,13 @@ class ApiItemsModel extends DataBase
         return $item ?: null;
     }
 
-    public function ItemExists($id_list, $content, $created_by)
+
+    public function ItemExists($id_list, $content)
     {
-        $req = "SELECT id FROM items_lists WHERE id_list = :id_list AND content = :content AND created_by = :created_by";
+        $req = "SELECT id FROM items_lists WHERE id_list = :id_list AND content = :content ";
         $stmt = $this->setDB()->prepare($req);
         $stmt->bindValue(':id_list', $id_list, PDO::PARAM_INT);
         $stmt->bindValue(':content', $content, PDO::PARAM_STR);
-        $stmt->bindValue(':created_by', $created_by, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetch();
         $stmt->closeCursor();
@@ -103,47 +103,58 @@ class ApiItemsModel extends DataBase
         $stmt->bindParam(':id_list', $id_list, PDO::PARAM_INT);
         $stmt->execute();
         $stmt->closeCursor();
-        return true; 
+        return true;
     }
 
     public function deleteAllCheckedItemsFromDB(int $id_list): int
-{
-    try {
-        $req = "DELETE FROM items_lists WHERE id_list = :id_list AND is_done = 1";
-        $stmt = $this->setDB()->prepare($req);
-        $stmt->bindParam(':id_list', $id_list, PDO::PARAM_INT);
-        $stmt->execute();
-        $deletedCount = $stmt->rowCount();
-        $stmt->closeCursor();
-        return $deletedCount;
-    } catch (\PDOException $e) {
-        error_log("Erreur SQL deleteAllCheckedItemsFromDB : " . $e->getMessage());
-        return 0; // Aucun item supprimé
+    {
+        try {
+            $req = "DELETE FROM items_lists WHERE id_list = :id_list AND is_done = 1";
+            $stmt = $this->setDB()->prepare($req);
+            $stmt->bindParam(':id_list', $id_list, PDO::PARAM_INT);
+            $stmt->execute();
+            $deletedCount = $stmt->rowCount();
+            $stmt->closeCursor();
+            return $deletedCount;
+        } catch (\PDOException $e) {
+            error_log("Erreur SQL deleteAllCheckedItemsFromDB : " . $e->getMessage());
+            return 0; // Aucun item supprimé
+        }
     }
-}
 
 
     public function deleteMyCheckedItemsFromDB(int $id_list, int $created_by): int
-{
-    try {
-        $req = "DELETE FROM items_lists 
+    {
+        try {
+            $req = "DELETE FROM items_lists 
                 WHERE id_list = :id_list 
                   AND created_by = :created_by 
                   AND is_done = 1";
 
-        $stmt = $this->setDB()->prepare($req);
-        $stmt->bindParam(':id_list', $id_list, PDO::PARAM_INT);
-        $stmt->bindParam(':created_by', $created_by, PDO::PARAM_INT);
-        $stmt->execute();
+            $stmt = $this->setDB()->prepare($req);
+            $stmt->bindParam(':id_list', $id_list, PDO::PARAM_INT);
+            $stmt->bindParam(':created_by', $created_by, PDO::PARAM_INT);
+            $stmt->execute();
 
-        $deletedCount = $stmt->rowCount();
+            $deletedCount = $stmt->rowCount();
+            $stmt->closeCursor();
+
+            return $deletedCount;
+        } catch (\PDOException $e) {
+            error_log("Erreur SQL deleteMyCheckedItemsFromDB : " . $e->getMessage());
+            return 0; // 0 supprimé => soit rien à supprimer, soit erreur
+        }
+    }
+
+    public function updateItemContent(int $item_id, string $new_content): bool
+    {
+        $req = "UPDATE items_lists SET content = :content WHERE id = :id LIMIT 1";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindValue(':content', $new_content, PDO::PARAM_STR);
+        $stmt->bindValue(':id', $item_id, PDO::PARAM_INT);
+        $success = $stmt->execute();
         $stmt->closeCursor();
 
-        return $deletedCount;
-    } catch (\PDOException $e) {
-        error_log("Erreur SQL deleteMyCheckedItemsFromDB : " . $e->getMessage());
-        return 0; // 0 supprimé => soit rien à supprimer, soit erreur
+        return $success && $stmt->rowCount() > 0;
     }
-}
-
 }

@@ -116,7 +116,7 @@ class ApiItemsController extends ApiController
                 $this->sendJson(["message" => "Accès refusé à la liste."], 403);
                 return;
             }
-            $itemFromDb = $this->apiItemsModel->getItemsById($id_item);
+            $itemFromDb = $this->apiItemsModel->getItemById($id_item);
             $is_done = isset($itemFromDb['is_done']) ? (int) !$itemFromDb['is_done'] : 1;
 
             $updateIsDone = $this->apiItemsModel->updateIsDone($id_item, $is_done);
@@ -180,7 +180,7 @@ class ApiItemsController extends ApiController
             }
 
             //  existe dejà dans la liste ?
-            $isExisting = $this->apiItemsModel->ItemExists($id_list, $content, $created_by);
+            $isExisting = $this->apiItemsModel->ItemExists($id_list, $content);
             if ($isExisting) {
                 $this->sendJson(["message" => "L'item existe déjà dans cette liste."], 400);
                 return;
@@ -227,8 +227,8 @@ class ApiItemsController extends ApiController
                 return;
             }
 
-            $id_list = $this->apiItemsModel->getItemsById($id)['id_list'];
-            $created_by = $this->apiItemsModel->getItemsById($id)['created_by'];
+            $id_list = $this->apiItemsModel->getItemById($id)['id_list'];
+            $created_by = $this->apiItemsModel->getItemById($id)['created_by'];
 
             // si access list, ai je le bon niveau d'accréditation ?
             $checkListAccessOwn = $this->apiListsModel->checkListAccessOwn($id_list, $userId);
@@ -319,6 +319,70 @@ class ApiItemsController extends ApiController
             $this->sendJson(["message" => "Items supprimés avec succès."], 200);
         } catch (\Throwable $e) {
             error_log("Erreur deleteCheckedItems : " . $e->getMessage());
+            $this->sendJson(["message" => "Erreur serveur"], 500);
+        }
+    }
+
+    public function changeContentItem(): void
+    {
+        try {
+            if ($_SERVER['REQUEST_METHOD'] !== 'PATCH') {
+                $this->sendJson(["message" => "Méthode non autorisée"], 405);
+                return;
+            }
+
+            $userId = $this->securityApiController->getAuthenticatedUserIdFromToken();
+            $data = json_decode(file_get_contents("php://input"), true);
+            $id_item = $data['itemId'];
+            $newContent = htmlspecialchars($data['content']);
+
+            if (!isset($id_item) || empty($id_item)) {
+                $this->sendJson(["message" => "ID de l'item manquant."], 400);
+                return;
+            }
+
+            $item = $this->apiItemsModel->getItemById($id_item);
+            if (!$item) {
+                $this->sendJson(["message" => "Item non trouvé."], 404);
+                return;
+            }
+
+            $id_list = $item['id_list'];
+            $created_by = $item['created_by'];
+            // si access list, ai je le bon niveau d'accréditation ?
+            $checkListAccessOwn = $this->apiListsModel->checkListAccessOwn($id_list, $userId);
+            $checkListAccessAll = $this->apiListsModel->checkListAccessAll($id_list, $userId);
+            // suis je propriétaire de la liste ?
+            $ownershipCheck = $this->apiListsModel->checkListOwnership($id_list, $userId);
+
+            $hasRights =
+                $ownershipCheck
+                || $checkListAccessAll
+                || ($checkListAccessOwn && $created_by === $userId);
+
+            if (!$hasRights) {
+                // error_log("Pas les droits de sup ". $id_list."/".$created_by."/".$userId);
+                $this->sendJson(["message" => "Accès refusé à la liste."], 403);
+                return;
+            }
+
+            $isContentExisting = $this->apiItemsModel->ItemExists($id_list, $newContent);
+            if ($isContentExisting) {
+                $this->sendJson(["message" => "L'item avec ce contenu existe déjà dans cette liste."], 400);
+                return;
+            }
+
+
+            if($this->apiItemsModel->updateItemContent($id_item, $newContent)) {
+                $this->sendJson(["message" => "Contenu de l'item modifié avec succès."], 200);
+                return;
+            } else {
+                $this->sendJson(["message" => "Erreur lors de la modification du contenu de l'item."], 500);
+                return;
+            }
+
+        } catch (\Throwable $e) {
+            error_log("Erreur changement Item Content : " . $e->getMessage());
             $this->sendJson(["message" => "Erreur serveur"], 500);
         }
     }

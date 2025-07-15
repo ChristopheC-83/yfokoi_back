@@ -7,7 +7,7 @@ namespace Src\Controller\Api;
 
 class ApiLinksController extends ApiController
 {
-    public function getFriends(): void
+    public function getMyFriends(): void
     {
         try {
             if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
@@ -22,7 +22,8 @@ class ApiLinksController extends ApiController
                 return;
             }
 
-            $friends = $this->apiLinksModel->getFriends($userId);
+            $friends = $this->apiLinksModel->getMyFriends($userId);
+            
             $this->sendJson($friends);
 
         } catch (\Throwable $th) {
@@ -30,4 +31,53 @@ class ApiLinksController extends ApiController
             $this->sendJson(["message" => "Erreur serveur"], 500);
         }
     }
+
+    public function sentRequest(): void
+    {
+        try {
+            if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+                $this->sendJson(["message" => "Méthode non autorisée"], 405);
+                return;
+            }
+
+            $userId = $this->securityApiController->getAuthenticatedUserIdFromToken();
+
+            if (!$userId) {
+                $this->sendJson(["message" => "Utilisateur non authentifié"], 401);
+                return;
+            }
+
+            $requests = $this->apiLinksModel->getSentRequests($userId);
+            
+            $this->sendJson($requests);
+
+        } catch (\Throwable $th) {
+            error_log($th->getMessage());
+            $this->sendJson(["message" => "Erreur serveur"], 500);
+        }
+    }   
+    public function receivedRequest(): void
+    {
+        try {
+            if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+                $this->sendJson(["message" => "Méthode non autorisée"], 405);
+                return;
+            }
+
+            $userId = $this->securityApiController->getAuthenticatedUserIdFromToken();
+
+            if (!$userId) {
+                $this->sendJson(["message" => "Utilisateur non authentifié"], 401);
+                return;
+            }
+
+            $requests = $this->apiLinksModel->getReceivedRequests($userId);
+            
+            $this->sendJson($requests);
+
+        } catch (\Throwable $th) {
+            error_log($th->getMessage());
+            $this->sendJson(["message" => "Erreur serveur"], 500);
+        }
+    }   
 }

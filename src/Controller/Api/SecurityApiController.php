@@ -48,8 +48,6 @@ class SecurityApiController
         return $base64Header . '.' . $base64Payload . '.' . $base64Signature;
     }
 
-
-
     public function verifyJwt($jwt)
     {
         // Diviser le JWT en ses trois parties

@@ -10,7 +10,8 @@ use Src\Controller\Dev\MainController;
 use Src\Models\Api\UsersReactModel;
 use Src\Models\Api\ApiListsModel;
 use Src\Controller\Api\SecurityApiController;
-use Src\Models\api\ApiItemsModel;
+use Src\Models\Api\ApiItemsModel;
+use Src\Models\Api\ApiLinksModel;
 
 class ApiController extends MainController
 {

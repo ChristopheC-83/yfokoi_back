@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Src\Models\api;
+namespace Src\Models\Api;
 
 use Src\Core\DataBase;
 use PDO;

@@ -72,8 +72,7 @@ class UsersLinksModel extends DataBase
 
     public function getAskFriendRequest(int $userId): array
     {
-        $req = "
-        SELECT u.id, u.name, u.email
+        $req = " SELECT u.id, u.name, u.email
         FROM user u 
         JOIN user_links ul ON u.id = ul.user1_id 
         WHERE ul.user2_id = :userId AND ul.status = 'pending'";

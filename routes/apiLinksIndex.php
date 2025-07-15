@@ -1,6 +1,6 @@
-<?php 
+<?php
 
-if(empty($path[1])) {
+if (empty($path[1])) {
     $path[1] = "api_links";
 }
 
@@ -10,8 +10,14 @@ $apiController->setCorsHeaders();
 
 switch ($path[1]) {
 
-    case "getFriends":
-        $apiLinksController->getFriends();
+    case "getMyFriends":
+        $apiLinksController->getMyFriends();
+        break;
+    case "sentRequest":
+        $apiLinksController->sentRequest();
+        break;
+    case "receivedRequest":
+        $apiLinksController->receivedRequest();
         break;
 
     default:

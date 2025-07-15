@@ -79,7 +79,6 @@ try {
         case "managementLists":
             require_once BASE_DIR . "/routes/managementListsIndex.php";
             break;
-
         case "api":
             require_once BASE_DIR . "/routes/apiUsersIndex.php";
             break;

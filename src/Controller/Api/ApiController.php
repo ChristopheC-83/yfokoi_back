@@ -58,22 +58,22 @@ class ApiController extends MainController
         }
     }
 
-    // protected function checkRequestMethod(string $expected): bool
-    // {
-    //     if ($_SERVER['REQUEST_METHOD'] !== strtoupper($expected)) {
-    //         $this->sendJson(["message" => "Méthode non autorisée"], 405);
-    //         return false;
-    //     }
-    //     return true;
-    // }
+    protected function checkRequestMethod(string $expected): bool
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== strtoupper($expected)) {
+            $this->sendJson(["message" => "Méthode non autorisée"], 405);
+            return false;
+        }
+        return true;
+    }
 
-    // protected function getAuthenticatedUserOrExit(): ?int
-    // {
-    //     $userId = $this->securityApiController->getAuthenticatedUserIdFromToken();
-    //     if (!$userId) {
-    //         $this->sendJson(["message" => "Utilisateur non authentifié"], 401);
-    //         return null;
-    //     }
-    //     return $userId;
-    // }
+    protected function getAuthenticatedUserOrExit(): ?int
+    {
+        $userId = $this->securityApiController->getAuthenticatedUserIdFromToken();
+        if (!$userId) {
+            $this->sendJson(["message" => "Utilisateur non authentifié"], 401);
+            return null;
+        }
+        return $userId;
+    }
 }

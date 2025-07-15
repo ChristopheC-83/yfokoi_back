@@ -4,6 +4,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 use Src\Controller\Api\ApiController;
 use Src\Controller\Api\ApiItemsController;
+use Src\Controller\Api\ApiLinksController;
 use Src\Controller\Api\ApiListsController;
 use Src\Controller\Api\ApiUserContextController;
 use Src\Controller\Api\ApiUsersController;
@@ -42,7 +43,8 @@ $apiController = new ApiController();
 $apiListsController = new ApiListsController();
 $apiUsersController = new ApiUsersController();
 $apiUserContextController = new ApiUserContextController();
-$apiItemsController = new ApiItemsController(); 
+$apiItemsController = new ApiItemsController();
+$apiLinksController = new ApiLinksController();
 
 
 try {
@@ -89,6 +91,9 @@ try {
             break;
         case "api_items":
             require_once BASE_DIR . "/routes/apiItemsIndex.php";
+            break;
+        case "api_links":
+            require_once BASE_DIR . "/routes/apiLinksIndex.php";
             break;
 
         default:

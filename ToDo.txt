@@ -1,2 +1,0 @@
-boutton à droite menu déroulant pour supprimer une liste si sélectionnée
-et si on en est l'auteur

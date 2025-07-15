@@ -368,7 +368,7 @@ class ApiItemsController extends ApiController
 
             $isContentExisting = $this->apiItemsModel->ItemExists($id_list, $newContent);
             if ($isContentExisting) {
-                $this->sendJson(["message" => "L'item avec ce contenu existe déjà dans cette liste."], 400);
+                $this->sendJson(["message" => "Cet élément existe déjà dans cette liste."], 400);
                 return;
             }
 

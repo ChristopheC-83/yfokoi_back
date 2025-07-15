@@ -17,9 +17,9 @@ class ApiController extends MainController
     public $usersReactModel;
     public $securityApiController;
     public $apiListsModel;
-    
     public $apiItemsModel;
-    
+    public $apiLinksModel;
+
     public function __construct()
     {
         parent::__construct();
@@ -27,6 +27,7 @@ class ApiController extends MainController
         $this->securityApiController = new SecurityApiController();
         $this->apiListsModel = new ApiListsModel();
         $this->apiItemsModel = new ApiItemsModel();
+        $this->apiLinksModel = new ApiLinksModel();
     }
 
     // Centraliser l'envoi des headers CORS
@@ -56,4 +57,23 @@ class ApiController extends MainController
             exit;
         }
     }
+
+    // protected function checkRequestMethod(string $expected): bool
+    // {
+    //     if ($_SERVER['REQUEST_METHOD'] !== strtoupper($expected)) {
+    //         $this->sendJson(["message" => "Méthode non autorisée"], 405);
+    //         return false;
+    //     }
+    //     return true;
+    // }
+
+    // protected function getAuthenticatedUserOrExit(): ?int
+    // {
+    //     $userId = $this->securityApiController->getAuthenticatedUserIdFromToken();
+    //     if (!$userId) {
+    //         $this->sendJson(["message" => "Utilisateur non authentifié"], 401);
+    //         return null;
+    //     }
+    //     return $userId;
+    // }
 }

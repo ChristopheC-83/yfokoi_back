@@ -19,6 +19,9 @@ switch ($path[1]) {
     case "receivedRequest":
         $apiLinksController->receivedRequest();
         break;
+    case "nameSearchedInDb":
+        $apiLinksController->nameSearchedInDb();
+        break;
 
     default:
         $apiController->sendJson(["message" => "Page non trouvée."], 404);

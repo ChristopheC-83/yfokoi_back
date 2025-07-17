@@ -33,4 +33,18 @@ class ApiHandleLinksModel extends DataBase
         $stmt->closeCursor();
         return $success;
     }
+
+     public function deleteLink(int $userId, int $contactId): bool
+    {
+        $req = "DELETE FROM user_links WHERE 
+        (user1_id = :userId AND user2_id = :contactId)
+        OR 
+        (user1_id = :contactId AND user2_id = :userId)";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':contactId', $contactId, PDO::PARAM_INT);
+        $success = $stmt->execute();
+        $stmt->closeCursor();
+        return $success;
+    }
 }

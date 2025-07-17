@@ -13,6 +13,9 @@ switch ($path[1]) {
  case "sendFriendRequest":
         $apiHandleLinksController->sendFriendRequest();
         break;
+ case "cancelRequest":
+        $apiHandleLinksController->cancelRequest();
+        break;
 
     default:
         $apiController->sendJson(["message" => "Page non trouvée."], 404);

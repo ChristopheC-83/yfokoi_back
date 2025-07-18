@@ -19,6 +19,12 @@ switch ($path[1]) {
  case "breakLink":
         $apiHandleLinksController->breakLink();
         break;
+ case "acceptRequest":
+        $apiHandleLinksController->acceptRequest();
+        break;
+ case "declineRequest":
+        $apiHandleLinksController->declineRequest();
+        break;
 
     default:
         $apiController->sendJson(["message" => "Page non trouvée."], 404);

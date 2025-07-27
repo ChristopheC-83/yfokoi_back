@@ -22,7 +22,7 @@ class ApiHandleLinksModel extends DataBase
         return $count > 0; // Retourne true si un lien existe déjà, sinon false
     }
 
-     public function createLink(int $user1Id, int $user2Id): bool
+    public function createLink(int $user1Id, int $user2Id): bool
     {
         // Insérer un lien entre les deux utilisateurs
         $req = "INSERT INTO user_links (user1_id, user2_id) VALUES (:user1Id, :user2Id)";
@@ -34,7 +34,7 @@ class ApiHandleLinksModel extends DataBase
         return $success;
     }
 
-     public function deleteLink(int $userId, int $contactId): bool
+    public function deleteLink(int $userId, int $contactId): bool
     {
         $req = "DELETE FROM user_links WHERE 
         (user1_id = :userId AND user2_id = :contactId)
@@ -48,7 +48,7 @@ class ApiHandleLinksModel extends DataBase
         return $success;
     }
 
-     public function acceptFriendRequest(int $userId, int $contactId): bool
+    public function acceptFriendRequest(int $userId, int $contactId): bool
     {
         $req = "UPDATE user_links SET status = 'accepted' WHERE user1_id = :contactId AND user2_id = :userId";
         $stmt = $this->setDB()->prepare($req);
@@ -68,4 +68,19 @@ class ApiHandleLinksModel extends DataBase
         $stmt->closeCursor();
         return $success;
     }
+    public function getBlockedUsers(int $userId): array
+{
+    $req = "SELECT u.id, u.name, u.email
+        FROM user u 
+        JOIN user_links ul 
+            ON ul.user1_id = u.id
+        WHERE ul.user2_id = :userId AND ul.status = 'declined'";
+    $stmt = $this->setDB()->prepare($req);
+    $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+    $stmt->execute();
+    $blockedUsers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
+    return $blockedUsers;
+}
+
 }

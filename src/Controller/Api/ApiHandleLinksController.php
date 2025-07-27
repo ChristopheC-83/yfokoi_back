@@ -223,4 +223,29 @@ class ApiHandleLinksController extends ApiController
             $this->sendJson(["message" => "Erreur serveur"], 500);
         }
     }
+
+     public function blockedUsers(): void
+    {
+        try {
+            if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+                $this->sendJson(["message" => "Méthode non autorisée"], 405);
+                return;
+            }
+
+            $userId = $this->securityApiController->getAuthenticatedUserIdFromToken();
+
+            if (!$userId) {
+                $this->sendJson(["message" => "Utilisateur non authentifié"], 401);
+                return;
+            }
+
+            $blockedUsers = $this->apiHandleLinksModel->getBlockedUsers($userId);
+
+            $this->sendJson($blockedUsers);
+            
+        } catch (\Throwable $th) {
+            error_log($th->getMessage());
+            $this->sendJson(["message" => "Erreur serveur"], 500);
+        }
+    }
 }

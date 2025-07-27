@@ -48,7 +48,9 @@ class ApiUsersController extends Apicontroller
             date("Y-m-d H:i:s"),
         );
 
-        if ($newUser) {
+        $newContextUser = $this->usersContextModel->createUserContext($newUser['id']);
+
+        if ($newUser && $newContextUser) {
             $this->sendJson(["message" => "Compte créé avec succès !!!"], 201);
         } else {
             $this->sendJson(["message" => "Erreur lors de la création du compte"], 500);
@@ -75,6 +77,11 @@ class ApiUsersController extends Apicontroller
             if (!$user) {
                 $this->sendJson(["message" => "Nom d'utilisateur ou mot de passe incorrect."], 401);
                 return;
+            }
+
+            $userContext = $this->usersContextModel->getUserContextById($user['id']);
+            if(!$userContext) {
+                $this->usersContextModel->createUserContext($user['id']);
             }
 
             $testPassword = $this->usersReactModel->isAccountValid($data['name'], $data['password']);

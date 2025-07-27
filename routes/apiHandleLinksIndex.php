@@ -25,6 +25,9 @@ switch ($path[1]) {
  case "declineRequest":
         $apiHandleLinksController->declineRequest();
         break;
+ case "blockedUsers":
+        $apiHandleLinksController->blockedUsers();
+        break;
 
     default:
         $apiController->sendJson(["message" => "Page non trouvée."], 404);

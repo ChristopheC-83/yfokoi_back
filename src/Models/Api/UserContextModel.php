@@ -21,5 +21,15 @@ class UsersReactModel extends DataBase
         return $userContext ?: null;
     }
 
+    public function createUserContext($userId): bool
+    {
+        $req = "INSERT INTO user_context (user_id) VALUES (:userId)";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $success = $stmt->execute();
+        $stmt->closeCursor();
+        return $success;
+    }
+
     
 }

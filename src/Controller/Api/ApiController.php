@@ -13,6 +13,7 @@ use Src\Controller\Api\SecurityApiController;
 use Src\Models\Api\ApiItemsModel;
 use Src\Models\Api\ApiLinksModel;
 use Src\Models\Api\ApiHandleLinksModel;
+use Src\Models\Api\ApiSharesModel;
 
 class ApiController extends MainController
 {
@@ -22,6 +23,7 @@ class ApiController extends MainController
     public $apiItemsModel;
     public $apiLinksModel;
     public $apiHandleLinksModel;
+    public $apiSharesModel;
 
     public function __construct()
     {
@@ -32,6 +34,7 @@ class ApiController extends MainController
         $this->apiItemsModel = new ApiItemsModel();
         $this->apiLinksModel = new ApiLinksModel();
         $this->apiHandleLinksModel = new ApiHandleLinksModel();
+        $this->apiSharesModel = new ApiSharesModel();
     }
 
     // Centraliser l'envoi des headers CORS

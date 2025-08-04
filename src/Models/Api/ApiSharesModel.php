@@ -31,4 +31,16 @@ class ApiSharesModel extends DataBase
         // return [1, 2, 3];
         return $shares;
     }
+
+    public function updateShare(int $list_id, int $user_id, string $access_level): bool
+    {
+        $req = "UPDATE lists_access 
+                SET access_level = :access_level 
+                WHERE list_id = :list_id AND user_id = :user_id";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindParam(':list_id', $list_id, PDO::PARAM_INT);
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->bindParam(':access_level', $access_level, PDO::PARAM_STR);
+        return $stmt->execute();
+    }
 }

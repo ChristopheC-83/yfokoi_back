@@ -74,6 +74,8 @@ class ApiListsModel extends DataBase
         return $result !== false;
     }
 
+    
+
     public function createNewList($name, $owner_id): int|false
     {
         $req = "INSERT INTO lists (name, owner_id) VALUES (:name, :owner_id)";
@@ -134,6 +136,8 @@ class ApiListsModel extends DataBase
         
         return (bool)$count;
     }
+
+    
 
     public function checkListAccess(int $list_id, int $user_id): bool
     {

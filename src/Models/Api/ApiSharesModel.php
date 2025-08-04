@@ -43,4 +43,15 @@ class ApiSharesModel extends DataBase
         $stmt->bindParam(':access_level', $access_level, PDO::PARAM_STR);
         return $stmt->execute();
     }
+
+    public function removeShare(int $author_id, int $list_id, int $user_id): bool
+    {
+        $req = "DELETE FROM lists_access 
+                WHERE list_id = :list_id AND user_id = :user_id AND author_id = :author_id";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindParam(':list_id', $list_id, PDO::PARAM_INT);
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->bindParam(':author_id', $author_id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
 }

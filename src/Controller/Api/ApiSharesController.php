@@ -85,7 +85,62 @@ class ApiSharesController extends ApiController
             $this->sendJson(["message" => "Partage mis à jour avec succès."], 200);
         } catch (\Throwable $th) {
             error_log($th->getMessage());
-            $this->sendJson(["message" => "Erreur serveur de kiki"], 500);
+            $this->sendJson(["message" => "Erreur serveur"], 500);
+        }
+    }
+    public function removeShare()
+    {
+        try {
+            if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
+                $this->sendJson(["message" => "Méthode non autorisée"], 405);
+                return;
+            }
+
+            $userId = $this->securityApiController->getAuthenticatedUserIdFromToken();
+
+            if (!$userId) {
+                $this->sendJson(["message" => "Utilisateur non authentifié"], 401);
+                return;
+            }
+            $data = json_decode(file_get_contents("php://input"), true);
+
+            $author_id = $userId;
+            $list_id = $data['list_id'];
+            $user_id = $data['user_id'];
+
+            //  j'ai bien toutes les données
+            if (is_null($list_id) || is_null($user_id)) {
+                $this->sendJson(["message" => "Données manquantes"], 400);
+                return;
+            }
+
+            // author est bien l'auteur de la list id
+            $isAuthor = $this->apiListsModel->checkListOwnership($list_id, $author_id);
+            if (!$isAuthor) {
+                $this->sendJson(["message" => "Vous n'êtes pas l'auteur de cette liste"], 403);
+                return;
+            }
+
+            // $user_id a bien accés à cette liste
+            $hasAccess = $this->apiListsModel->checkListAccess($list_id, $user_id);
+            if (!$hasAccess) {
+                $this->sendJson(["message" => "Accès refusé"], 403);
+                return;
+            }
+
+            //  on modifie l'access_level
+            $success = $this->apiSharesModel->removeShare($author_id,$list_id, $user_id);
+
+            if (!$success) {
+                $this->sendJson(["message" => "Erreur lors de la suppression du partage."], 500);
+                return;
+            }
+            $this->sendJson(["message" => "Partage supprimé avec succès."], 200);
+
+
+        } catch (\Throwable $th) {
+            error_log($th->getMessage());
+            $this->sendJson(["message" => "Erreur serveur"], 500);
         }
     }
 }

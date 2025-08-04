@@ -15,6 +15,9 @@ switch ($path[1]) {
     case "updateShare":
         $apiSharesController->updateShare();
         break;
+    case "removeShare":
+        $apiSharesController->removeShare();
+        break;
 
     default:
         $sharesApiController->sendJson(["message" => "Page non trouvée."], 404);

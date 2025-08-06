@@ -157,4 +157,15 @@ class ApiItemsModel extends DataBase
 
         return $success && $stmt->rowCount() > 0;
     }
+
+    public function removeMyItemsByListId(int $id_list, int $created_by): bool
+    {
+        $req = "DELETE FROM items_lists WHERE id_list = :id_list AND created_by = :created_by";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindValue(':id_list', $id_list, PDO::PARAM_INT);
+        $stmt->bindValue(':created_by', $created_by, PDO::PARAM_INT);
+        $success = $stmt->execute();
+        $stmt->closeCursor();
+        return $success;
+    }
 }

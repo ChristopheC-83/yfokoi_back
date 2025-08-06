@@ -12,6 +12,9 @@ switch ($path[1]) {
     case "getAllShares":
         $apiSharesController->getAllShares();
         break;
+    case "createShare":
+        $apiSharesController->createShare();
+        break;
     case "updateShare":
         $apiSharesController->updateShare();
         break;

@@ -32,6 +32,38 @@ class ApiSharesModel extends DataBase
         return $shares;
     }
 
+    public function createShare(int $author_id, string $author_name, int $user_id, int $list_id): bool
+    {
+         $req = "INSERT INTO lists_access (list_id, user_id, access_level, author_id, author_name) 
+                VALUES (:list_id, :user_id, :access_level, :author_id, :author_name)";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindValue(':list_id', $list_id, PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->bindValue(':access_level', 1, PDO::PARAM_INT);
+        $stmt->bindValue(':author_id', $author_id, PDO::PARAM_INT);
+        $stmt->bindValue(':author_name', $author_name, PDO::PARAM_STR);
+        $success = $stmt->execute();
+        $stmt->closeCursor();
+        return $success;
+    }
+
+    public function getShare(int $author_id, int $user_id, int $list_id): array|false
+    {
+        $req = "SELECT * FROM lists_access 
+            WHERE author_id = :author_id AND user_id = :user_id AND list_id = :list_id
+            LIMIT 1";
+
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindParam(':author_id', $author_id, PDO::PARAM_INT);
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->bindParam(':list_id', $list_id, PDO::PARAM_INT);
+
+        $stmt->execute();
+        $share = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $share ?: false;
+    }
+
+
     public function updateShare(int $list_id, int $user_id, string $access_level): bool
     {
         $req = "UPDATE lists_access 

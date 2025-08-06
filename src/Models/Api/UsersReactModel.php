@@ -37,6 +37,17 @@ class UsersReactModel extends DataBase
         return $user;
     }
 
+    public function getNameById($id)
+    {
+        $req = "SELECT name FROM user WHERE id = :id";
+        $stmt = $this->setDB()->prepare($req);
+        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $name = $stmt->fetchColumn();
+        $stmt->closeCursor();
+        return $name;
+    }
+
     public function getUserByName($name)
     {
         $req = "SELECT * FROM user WHERE name = :name";
